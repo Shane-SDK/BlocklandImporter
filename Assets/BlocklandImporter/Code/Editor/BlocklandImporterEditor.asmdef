@@ -1,0 +1,18 @@
+{
+    "name": "BlocklandImporterEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a9cb138a76038894c9b93f15f428761b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: f900cbefa3ca61842aaf6a8d213ec4a7
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 3ec8e045f7d92bd43933be3a42500498, type: 3}
+  brickIndex: 11

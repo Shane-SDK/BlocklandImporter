@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEditor.AssetImporters;
 using System.IO;
 using UnityEngine.Rendering;
-using UnityEditor;
 
 namespace Blockland.Editor
 {
@@ -20,7 +19,7 @@ namespace Blockland.Editor
         {
             using (FileStream file = System.IO.File.OpenRead(ctx.assetPath))
             {
-                StreamReader reader = new StreamReader(file);
+                Reader reader = new Reader(file);
                 UnityEngine.Profiling.Profiler.BeginSample("SaveReader");
                 SaveReader save = new SaveReader(reader);
                 UnityEngine.Profiling.Profiler.EndSample();

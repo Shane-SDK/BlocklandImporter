@@ -8,7 +8,7 @@ namespace Blockland
     {
         public List<BrickInstance> bricks = new List<BrickInstance>();
         public Color[] colors = new Color[64];
-        public SaveReader(StreamReader reader)
+        public SaveReader(Reader reader)
         {
             reader.ReadLine();  // skip first line
 
@@ -21,11 +21,12 @@ namespace Blockland
             // Read color table
             for (int i = 0; i < 64; i++)
             {
-                colors[i] = ReadColor(reader);
+                reader.ReadLine();
+                colors[i] = new Color(reader.ReadLineFloat(0), reader.ReadLineFloat(1), reader.ReadLineFloat(2), reader.ReadLineFloat(3));
             }
 
             // Read linecount
-            if (!int.TryParse(reader.ReadLine().Split(' ', options: System.StringSplitOptions.RemoveEmptyEntries)[^1], out int lineCount)) return;
+            reader.ReadLine();
 
             while (!reader.EndOfStream)
             {
@@ -44,52 +45,23 @@ namespace Blockland
 
             void ParseBlockLine(string line)
             {
+                if (!reader.TryParseLineElement(0, out string brickDesignator) || !brickDesignator.Contains('"')) return;
+
                 int quoteIndex = line.IndexOf('"');
                 string brickUIName = line.Substring(0, quoteIndex);
                 // Load resource
                 if (Blockland.resources.GetResource(new Resources.ResourcePath(brickUIName + ".blb"), out Resources.Brick brickResource))
                 {
-                    string[] brickStringData = line.Substring(quoteIndex + 1, line.Length - (quoteIndex + 1)).Split(' ', options: System.StringSplitOptions.RemoveEmptyEntries);
-                    float ReadValue(int index)
-                    {
-                        if (float.TryParse(brickStringData[index], out float result))
-                            return result;
-                        else return 0;
-                    }
-                    int ReadInt(int index)
-                    {
-                        if (int.TryParse(brickStringData[index], out int result))
-                            return result;
-                        else return 0;
-                    }
+                    Vector3 position = Blockland.BlocklandUnitsToStuds(new Vector3(reader.ReadLineFloat(1), reader.ReadLineFloat(3), reader.ReadLineFloat(2)));
+                    int colorIndex = reader.ReadLineInt(6);
 
-                    if (brickStringData.Length < 3) return;
-                    Vector3 position = Blockland.BlocklandUnitsToStuds(new Vector3(ReadValue(0), ReadValue(2), ReadValue(1)));
-                    int colorIndex = ReadInt(5);
-
-                    byte angle = (byte)Mathf.RoundToInt(ReadValue(3));
+                    byte angle = (byte)Mathf.RoundToInt(reader.ReadLineFloat(4));
 
                     bricks.Add(new BrickInstance { brickResource = brickResource, position = position, angle = angle, color = colors[colorIndex] });
 
                 }
 
             }
-        }
-        public Color ReadColor(StreamReader reader)
-        {
-            string[] lineValues = reader.ReadLine().Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
-
-            Color color = new Color();
-
-            for (int i = 0; i < Mathf.Min(4, lineValues.Length); i++)
-            {
-                if (float.TryParse(lineValues[i], out float value))
-                {
-                    color[i] = value;
-                }
-            }
-
-            return color;
         }
         public struct BrickInstance
         {

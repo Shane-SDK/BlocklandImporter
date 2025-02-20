@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEditor.AssetImporters;
 using System.IO;
 using UnityEngine.Rendering;
+using Blockland.Objects;
 
 namespace Blockland.Editor
 {
@@ -20,8 +21,9 @@ namespace Blockland.Editor
             using (FileStream file = System.IO.File.OpenRead(ctx.assetPath))
             {
                 Reader reader = new Reader(file);
-                UnityEngine.Profiling.Profiler.BeginSample("SaveReader");
-                SaveReader save = new SaveReader(reader);
+                UnityEngine.Profiling.Profiler.BeginSample("Read Save");
+                SaveData save = SaveData.CreateFromReader(reader);
+                save.name = System.IO.Path.GetFileNameWithoutExtension(ctx.assetPath);
                 UnityEngine.Profiling.Profiler.EndSample();
 
                 UnityEngine.Profiling.Profiler.BeginSample("Asset Creation");
@@ -38,7 +40,7 @@ namespace Blockland.Editor
                 HashSet<Vector3Int> occludingCoords = new HashSet<Vector3Int>();
                 for (int i = 0; i < save.bricks.Count; i++)
                 {
-                    SaveReader.BrickInstance instance = save.bricks[i];
+                    SaveData.BrickInstance instance = save.bricks[i];
                     instance.GetTransformedBounds(out BoundsInt bounds);
 
                     foreach (Vector3Int pos in bounds.allPositionsWithin)
@@ -54,7 +56,7 @@ namespace Blockland.Editor
 
                 for (int i = 0; i < save.bricks.Count; i++)
                 {
-                    SaveReader.BrickInstance instance = save.bricks[i];
+                    SaveData.BrickInstance instance = save.bricks[i];
 
                     if (instance.brickResource.Type == Resources.ResourceType.Brick)
                     {
@@ -192,6 +194,7 @@ namespace Blockland.Editor
                 }
 
                 Mesh mesh = new Mesh();
+                mesh.name = System.IO.Path.GetFileName(ctx.assetPath);
                 mesh.indexFormat = vertices.Count >= (65536) ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16;
 
                 mesh.SetVertexBufferParams(vertices.Count, vertexAttributes);
@@ -216,6 +219,7 @@ namespace Blockland.Editor
                 root.AddComponent<MeshRenderer>().sharedMaterials = materials;
 
                 ctx.AddObjectToAsset("mesh", mesh);
+                ctx.AddObjectToAsset("saveData", save);
 
                 UnityEngine.Profiling.Profiler.EndSample();
             }

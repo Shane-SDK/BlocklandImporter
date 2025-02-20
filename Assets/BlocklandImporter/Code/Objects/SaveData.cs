@@ -1,19 +1,23 @@
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
-using System.IO;
 
-namespace Blockland
+namespace Blockland.Objects
 {
-    public class SaveReader
+    public class SaveData : ScriptableObject
     {
+        public Color[] colorMap = new Color[64];
         public List<BrickInstance> bricks = new List<BrickInstance>();
-        public Color[] colors = new Color[64];
-        public SaveReader(Reader reader)
+        public static SaveData CreateFromReader(Reader reader)
         {
+            SaveData saveData = ScriptableObject.CreateInstance<SaveData>();
             reader.ReadLine();  // skip first line
 
             // Read description
-            if (!int.TryParse(reader.ReadLine(), out int descLineCount)) return;
+            if (!int.TryParse(reader.ReadLine(), out int descLineCount)) return saveData;
 
             for (int i = 0; i < descLineCount; i++)
                 reader.ReadLine();
@@ -22,7 +26,7 @@ namespace Blockland
             for (int i = 0; i < 64; i++)
             {
                 reader.ReadLine();
-                colors[i] = new Color(reader.ReadLineFloat(0), reader.ReadLineFloat(1), reader.ReadLineFloat(2), reader.ReadLineFloat(3));
+                saveData.colorMap[i] = new Color(reader.ParseLineFloat(0), reader.ParseLineFloat(1), reader.ParseLineFloat(2), reader.ParseLineFloat(3));
             }
 
             // Read linecount
@@ -52,16 +56,18 @@ namespace Blockland
                 // Load resource
                 if (Blockland.resources.GetResource(new Resources.ResourcePath(brickUIName + ".blb"), out Resources.Brick brickResource))
                 {
-                    Vector3 position = Blockland.BlocklandUnitsToStuds(new Vector3(reader.ReadLineFloat(1), reader.ReadLineFloat(3), reader.ReadLineFloat(2)));
-                    int colorIndex = reader.ReadLineInt(6);
+                    Vector3 position = Blockland.BlocklandUnitsToStuds(new Vector3(reader.ParseLineFloat(1), reader.ParseLineFloat(3), reader.ParseLineFloat(2)));
+                    int colorIndex = reader.ParseLineInt(6);
 
-                    byte angle = (byte)Mathf.RoundToInt(reader.ReadLineFloat(4));
+                    byte angle = (byte)Mathf.RoundToInt(reader.ParseLineFloat(4));
 
-                    bricks.Add(new BrickInstance { brickResource = brickResource, position = position, angle = angle, color = colors[colorIndex] });
+                    saveData.bricks.Add(new BrickInstance { brickResource = brickResource, position = position, angle = angle, color = saveData.colorMap[colorIndex] });
 
                 }
 
             }
+
+            return saveData;
         }
         public struct BrickInstance
         {

@@ -8,6 +8,16 @@ namespace Blockland
     {
         public string Line => lineCache;
         public IReadOnlyList<Run> Runs => stringRuns;
+        public IEnumerable<string> RunStrings
+        {
+            get
+            {
+                foreach (Run run in Runs)
+                {
+                    yield return lineCache.Substring(run.start, run.count);
+                }
+            }
+        }
         string lineCache;
         List<Run> stringRuns;
         public Reader(Stream stream) : base(stream)
@@ -74,7 +84,7 @@ namespace Blockland
             if (index < stringRuns.Count)
             {
                 Run run = stringRuns[index];
-                if (run.start + run.count < lineCache.Length)
+                if (run.start + run.count <= lineCache.Length)
                 {
                     value = lineCache.Substring(run.start, run.count);
                     return true;
@@ -84,14 +94,14 @@ namespace Blockland
             value = string.Empty;
             return false;
         }
-        public float ReadLineFloat(int index)
+        public float ParseLineFloat(int index)
         {
             if (TryParseLineElement(index, out float value))
                 return value;
 
             return 0;
         }
-        public int ReadLineInt(int index)
+        public int ParseLineInt(int index)
         {
             if (TryParseLineElement(index, out int value))
                 return value;

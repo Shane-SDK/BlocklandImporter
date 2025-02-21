@@ -8,9 +8,16 @@ namespace Blockland.Resources
 {
     public struct ResourcePath
     {
-        public ResourcePath(string path)
+        public string AssetDatabasePath
         {
-            this.path = path.ToLower();
+            get
+            {
+                return $"Assets/BlocklandImporter/Assets/{path}";
+            }
+        }
+        public ResourcePath(string blocklandPath)
+        {
+            this.path = blocklandPath.ToLower();
         }
         public string path;
     }

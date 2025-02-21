@@ -1,0 +1,1682 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b239884a11c9e6c4090b813a81f9aecb, type: 3}
+  m_Name: BrickUINameTable
+  m_EditorClassIdentifier: 
+  keys:
+  - 1x1
+  - 1x2
+  - 1x3
+  - 1x4
+  - 1x6
+  - 1x8
+  - 1x10
+  - 1x12
+  - 1x16
+  - 2x2
+  - 2x3
+  - 2x4
+  - 2x6
+  - 2x8
+  - 2x10
+  - 4x4
+  - 4x6
+  - 4x8
+  - 4x10
+  - 4x12
+  - 4x16
+  - 8x8
+  - 8x16
+  - 10x10
+  - 10x20
+  - 12x24
+  - 2x2x3
+  - 2x4x3
+  - 2x6x3
+  - 1x1x5
+  - 1x2x5
+  - 1x3x5
+  - 1x4x5
+  - 1x6x5
+  - 1x12x5
+  - 2x2x5
+  - 2x3x5
+  - 2x4x5
+  - 2x6x5
+  - 2x12x5
+  - 1x1f
+  - 1x2f
+  - 1x3f
+  - 1x4f
+  - 1x6f
+  - 1x8f
+  - 1x10f
+  - 1x12f
+  - 1x16f
+  - 2x2f
+  - 2x3f
+  - 2x4f
+  - 2x6f
+  - 2x8f
+  - 2x10f
+  - 4x4f
+  - 4x6f
+  - 4x8f
+  - 4x10f
+  - 4x12f
+  - 4x16f
+  - 6x6f
+  - 6x8f
+  - 6x10f
+  - 6x12f
+  - 6x16f
+  - 6x24f
+  - 8x8f
+  - 8x16f
+  - 1x1 round
+  - 1x1 cone
+  - 2x2 round
+  - 2x2x2 cone
+  - 1x1f round
+  - 2x2f round
+  - 2x2 disc
+  - castle wall
+  - 1x4x5 window
+  - 2x2x5 lattice
+  - pine tree
+  - 1x4x2 fence
+  - "25\uFFFD ramp 1x"
+  - "25\uFFFD ramp 2x"
+  - "25\uFFFD ramp 4x"
+  - "-25\uFFFD ramp 1x"
+  - "-25\uFFFD ramp 2x"
+  - "25\uFFFD ramp corner"
+  - "-25\uFFFD ramp corner"
+  - "25\uFFFD crest 4x"
+  - "25\uFFFD crest 2x"
+  - "25\uFFFD crest 1x"
+  - "25\uFFFD crest end"
+  - "25\uFFFD crest corner"
+  - "45\uFFFD ramp 1x"
+  - "45\uFFFD ramp 2x"
+  - "45\uFFFD ramp 4x"
+  - "-45\uFFFD ramp 1x"
+  - "-45\uFFFD ramp 2x"
+  - "45\uFFFD ramp corner"
+  - "-45\uFFFD ramp corner"
+  - "45\uFFFD crest 4x"
+  - "45\uFFFD crest 2x"
+  - "45\uFFFD crest 1x"
+  - "45\uFFFD crest end"
+  - "45\uFFFD crest corner"
+  - "72\uFFFD ramp 1x"
+  - "72\uFFFD ramp 2x"
+  - "72\uFFFD ramp corner"
+  - "-72\uFFFD ramp 1x"
+  - "-72\uFFFD ramp 2x"
+  - "-72\uFFFD ramp corner"
+  - "80\uFFFD ramp 1x"
+  - "80\uFFFD ramp 2x"
+  - "80\uFFFD ramp corner"
+  - "-80\uFFFD ramp 1x"
+  - "-80\uFFFD ramp 2x"
+  - "-80\uFFFD ramp corner"
+  - 16x16 base
+  - 16x32 base
+  - 32x32 base
+  - 48x48 base
+  - 64x64 base
+  - 32x32 road
+  - 32x32 road t
+  - 32x32 road c
+  - 32x32 road x
+  - "45\uFFFD ramp 2x print"
+  - "-45\uFFFD ramp 2x print"
+  - 2x2f print
+  - 1x2f print
+  - 1x1f print
+  - 1x1 print
+  - 1x4x4 print
+  - music brick
+  - spawn point
+  - vehicle spawn
+  - 64x cube
+  - 32x cube
+  - 16x cube
+  - 8x cube
+  - 4x cube
+  - 8x water
+  - 8x river
+  - 8x rapids
+  - 32x water
+  - trampoline
+  - mud
+  - air vent
+  - booster
+  - vehicle booster
+  - force gate
+  - conveyorbelt
+  - zero gravity zone
+  - 8x8 sludge water
+  - 8x8 waterfall
+  - 1x4x5 zone brick
+  - 1x2x5 ladder helper
+  - 8x8 zone cube
+  - 16x16 zone cube
+  - 32x32 zone cube
+  - 64x64 zone cube
+  - 4x4 zone plate
+  - 2x4 zone plate
+  - 8x8 zone plate
+  - 4x8 zone plate
+  - 6x12 zone plate
+  - 1x1x3 window
+  - 1x2x3 window
+  - 1x4x3 window
+  - 1x4x2 window
+  - 1x3x2 window
+  - 1x2x2 window
+  - 1x1x2 window
+  - 1x2x1 window
+  - 1x1x1 window
+  - 2x4x5 window slanted
+  - 3x4x6 window slanted
+  - 4x4x3 window slanted
+  - 4x5x2 window slanted
+  - bay window
+  - 1x1f wedge
+  - 1x1 wedge
+  - 1x1x5 wedge
+  - 2x3f wedge left
+  - 2x3f wedge right
+  - 2x3 wedge left
+  - 2x3 wedge right
+  - 2x3x5 wedge left
+  - 2x3x5 wedge right
+  - 2x4f wedge left
+  - 2x4f wedge right
+  - 2x4 wedge left
+  - 2x4 wedge right
+  - 2x4x5 wedge left
+  - 2x4x5 wedge right
+  - 3x3f wedge
+  - 3x3 wedge
+  - 3x3x5 wedge
+  - 4x8 wing left
+  - 4x8 wing right
+  - 3x6f wedge l
+  - 3x6f wedge r
+  - 3x12f wedge l
+  - 3x12f wedge r
+  - 4x4f wedge
+  - 6x6f wedge
+  - 8x8f wedge
+  - 4x4 wing l
+  - 4x4 wing r
+  - 3x8 wing l
+  - 3x8 wing r
+  - 6x12 wing l
+  - 6x12 wing r
+  - 4x9 wing
+  - 2x4 ramped r
+  - 2x4 ramped l
+  - 4x4 ramped
+  - 4x4 ramped inv.
+  - 2x6 curved r
+  - 2x6 curved r inv.
+  - 2x6 curved l
+  - 2x6 curved l inv.
+  - 2x3x8 curved l
+  - 2x3x8 curved r
+  - 3x10 curved l
+  - 3x10 curved r
+  - 4x16 curved
+  - 4x4 taper
+  - 4x6 ramped
+  - 4x6 ramped inv.
+  - 6x8 ramped
+  - 2x4 sloped r
+  - 2x4 sloped l
+  - 2x4f arrow
+  - 3x4f arrow
+  - 4x4f arrow
+  - 8x8f arrow
+  - 4x4 wedge linked
+  - 3x6f arrow
+  - 4x6f arrow
+  - 8x8 grill
+  - 1x4x2 bars
+  - 1x4x2 picket
+  - 2x2 corner
+  - treasure chest
+  - 1x1f tile
+  - 1x2f tile
+  - 1x3f tile
+  - 1x4f tile
+  - 1x6f tile
+  - 1x8f tile
+  - 2x2f tile
+  - 2x3f tile
+  - 2x4f tile
+  - 2x6f tile
+  - 2x8f tile
+  - 3x3f tile
+  - 4x4f tile
+  - 1x1f corner tile
+  - 2x2f corner tile
+  - 1x1f thick pole
+  - 1x1 thick pole
+  - 1x3 thick pole
+  - teledoor
+  - poster 8x
+  - 1x1f pole plus
+  - 1x1f pole corner
+  - 1x1f pole corner up
+  - 1x1f pole corner down
+  - 1x1f pole t
+  - 1x1f pole t down
+  - 1x1f pole t up
+  - 1x1f pole x
+  - 1x1f pole x vert
+  - 1x1x3 pole
+  - 1x1 pole
+  - 1x1f pole
+  - 32x ramp steep inv.
+  - 32x cora steep inv.
+  - 32x corb steep inv.
+  - 32x corc steep inv.
+  - 32x cord steep inv.
+  - 16x ramp steep inv.
+  - 16x cora steep inv.
+  - 16x corb steep inv.
+  - 16x corc steep inv.
+  - 16x cord steep inv.
+  - 8x ramp steep inv.
+  - 8x cora steep inv.
+  - 8x corb steep inv.
+  - 8x corc steep inv.
+  - 8x cord steep inv.
+  - 64x ramp inv.
+  - 64x cora inv.
+  - 64x corb inv.
+  - 64x corc inv.
+  - 64x cord inv.
+  - 32x ramp inv.
+  - 32x cora inv.
+  - 32x corb inv.
+  - 32x corc inv.
+  - 32x cord inv.
+  - 16x ramp inv.
+  - 16x cora inv.
+  - 16x corb inv.
+  - 16x corc inv.
+  - 16x cord inv.
+  - 8x ramp inv.
+  - 8x cora inv.
+  - 8x corb inv.
+  - 8x corc inv.
+  - 8x cord inv.
+  - 64x ramp 3/4h inv.
+  - 64x cora 3/4h inv.
+  - 64x corb 3/4h inv.
+  - 64x corc 3/4h inv.
+  - 64x cord 3/4h inv.
+  - 32x ramp 3/4h inv.
+  - 32x cora 3/4h inv.
+  - 32x corb 3/4h inv.
+  - 32x corc 3/4h inv.
+  - 32x cord 3/4h inv.
+  - 16x ramp 3/4h inv.
+  - 16x cora 3/4h inv.
+  - 16x corb 3/4h inv.
+  - 16x corc 3/4h inv.
+  - 16x cord 3/4h inv.
+  - 8x ramp 3/4h inv.
+  - 8x cora 3/4h inv.
+  - 8x corb 3/4h inv.
+  - 8x corc 3/4h inv.
+  - 8x cord 3/4h inv.
+  - 64x ramp 1/2h inv.
+  - 64x cora 1/2h inv.
+  - 64x corb 1/2h inv.
+  - 64x corc 1/2h inv.
+  - 64x cord 1/2h inv.
+  - 32x ramp 1/2h inv.
+  - 32x cora 1/2h inv.
+  - 32x corb 1/2h inv.
+  - 32x corc 1/2h inv.
+  - 32x cord 1/2h inv.
+  - 16x ramp 1/2h inv.
+  - 16x cora 1/2h inv.
+  - 16x corb 1/2h inv.
+  - 16x corc 1/2h inv.
+  - 16x cord 1/2h inv.
+  - 8x ramp 1/2h inv.
+  - 8x cora 1/2h inv.
+  - 8x corb 1/2h inv.
+  - 8x corc 1/2h inv.
+  - 8x cord 1/2h inv.
+  - 64x ramp 1/4h inv.
+  - 64x cora 1/4h inv.
+  - 64x corb 1/4h inv.
+  - 64x corc 1/4h inv.
+  - 64x cord 1/4h inv.
+  - 32x ramp 1/4h inv.
+  - 32x cora 1/4h inv.
+  - 32x corb 1/4h inv.
+  - 32x corc 1/4h inv.
+  - 32x cord 1/4h inv.
+  - 16x ramp 1/4h inv.
+  - 16x cora 1/4h inv.
+  - 16x corb 1/4h inv.
+  - 16x corc 1/4h inv.
+  - 16x cord 1/4h inv.
+  - 8x ramp 1/4h inv.
+  - 8x cora 1/4h inv.
+  - 8x corb 1/4h inv.
+  - 8x corc 1/4h inv.
+  - 8x cord 1/4h inv.
+  - 32x cube steep
+  - 32x wedge steep
+  - 32x ramp steep
+  - 32x cornera steep
+  - 32x cornerb steep
+  - 32x cornerc steep
+  - 32x cornerd steep
+  - 16x cube steep
+  - 16x wedge steep
+  - 16x ramp steep
+  - 16x cornera steep
+  - 16x cornerb steep
+  - 16x cornerc steep
+  - 16x cornerd steep
+  - 8x cube steep
+  - 8x wedge steep
+  - 8x ramp steep
+  - 8x cornera steep
+  - 8x cornerb steep
+  - 8x cornerc steep
+  - 8x cornerd steep
+  - '64x cube '
+  - 64x wedge
+  - 64x ramp
+  - 64x cornera
+  - 64x cornerb
+  - 64x cornerc
+  - 64x cornerd
+  - '32x cube '
+  - 32x wedge
+  - 32x ramp
+  - 32x cornera
+  - 32x cornerb
+  - 32x cornerc
+  - 32x cornerd
+  - '16x cube '
+  - 16x wedge
+  - 16x ramp
+  - 16x cornera
+  - 16x cornerb
+  - 16x cornerc
+  - 16x cornerd
+  - '8x cube '
+  - 8x wedge
+  - 8x ramp
+  - 8x cornera
+  - 8x cornerb
+  - 8x cornerc
+  - 8x cornerd
+  - 64x cube 3/4h
+  - 64x wedge 3/4h
+  - 64x ramp 3/4h
+  - 64x cornera 3/4h
+  - 64x cornerb 3/4h
+  - 64x cornerc 3/4h
+  - 64x cornerd 3/4h
+  - 32x cube 3/4h
+  - 32x wedge 3/4h
+  - 32x ramp 3/4h
+  - 32x cornera 3/4h
+  - 32x cornerb 3/4h
+  - 32x cornerc 3/4h
+  - 32x cornerd 3/4h
+  - 16x cube 3/4h
+  - 16x wedge 3/4h
+  - 16x ramp 3/4h
+  - 16x cornera 3/4h
+  - 16x cornerb 3/4h
+  - 16x cornerc 3/4h
+  - 16x cornerd 3/4h
+  - 8x cube 3/4h
+  - 8x wedge 3/4h
+  - 8x ramp 3/4h
+  - 8x cornera 3/4h
+  - 8x cornerb 3/4h
+  - 8x cornerc 3/4h
+  - 8x cornerd 3/4h
+  - 64x cube 1/2h
+  - 64x wedge 1/2h
+  - 64x ramp 1/2h
+  - 64x cornera 1/2h
+  - 64x cornerb 1/2h
+  - 64x cornerc 1/2h
+  - 64x cornerd 1/2h
+  - 32x cube 1/2h
+  - 32x wedge 1/2h
+  - 32x ramp 1/2h
+  - 32x cornera 1/2h
+  - 32x cornerb 1/2h
+  - 32x cornerc 1/2h
+  - 32x cornerd 1/2h
+  - 16x cube 1/2h
+  - 16x wedge 1/2h
+  - 16x ramp 1/2h
+  - 16x cornera 1/2h
+  - 16x cornerb 1/2h
+  - 16x cornerc 1/2h
+  - 16x cornerd 1/2h
+  - 8x cube 1/2h
+  - 8x wedge 1/2h
+  - 8x ramp 1/2h
+  - 8x cornera 1/2h
+  - 8x cornerb 1/2h
+  - 8x cornerc 1/2h
+  - 8x cornerd 1/2h
+  - 64x cube 1/4h
+  - 64x wedge 1/4h
+  - 64x ramp 1/4h
+  - 64x cornera 1/4h
+  - 64x cornerb 1/4h
+  - 64x cornerc 1/4h
+  - 64x cornerd 1/4h
+  - 32x cube 1/4h
+  - 32x wedge 1/4h
+  - 32x ramp 1/4h
+  - 32x cornera 1/4h
+  - 32x cornerb 1/4h
+  - 32x cornerc 1/4h
+  - 32x cornerd 1/4h
+  - 16x cube 1/4h
+  - 16x wedge 1/4h
+  - 16x ramp 1/4h
+  - 16x cornera 1/4h
+  - 16x cornerb 1/4h
+  - 16x cornerc 1/4h
+  - 16x cornerd 1/4h
+  - 8x cube 1/4h
+  - 8x wedge 1/4h
+  - 8x ramp 1/4h
+  - 8x cornera 1/4h
+  - 8x cornerb 1/4h
+  - 8x cornerc 1/4h
+  - 8x cornerd 1/4h
+  - ' 4x cube'
+  - 4x wedge
+  - 4x ramp
+  - 4x ramp inv.
+  - 4x cornera
+  - 4x cornera inv.
+  - 4x cornerb
+  - 4x cornerb inv.
+  - 4x cornerc
+  - 4x cornerc inv.
+  - 4x cornerd
+  - 4x cornerd inv.
+  - skull open
+  - skull
+  - skull angry open
+  - skull angry
+  - skull sad open
+  - skull sad
+  - skull murray open
+  - skull murray
+  - skull cool open
+  - skull cool
+  - coffin standing
+  - coffin
+  - pumpkin
+  - pumpkin_face
+  - pumpkin_scared
+  - pumpkin_ascii
+  - gravestone
+  - 1x4 fence
+  - 1x6x2 arched fence
+  - 1x8 country fence
+  - 4x4x2 corner bars
+  - 1x6x2 train fence
+  - 1x4x2 studded rail
+  - 1x6 rail
+  - 1x8x2 rail
+  - 1x4x2 rail
+  - 1x6 curved ramp
+  - 2x6 curved ramp
+  - 1x6 curved inverted
+  - 2x6 curved inverted
+  - 2x4 curved ramp
+  - 1x3 curved ramp
+  - "30\uFFFD ramp 1x"
+  - "10\uFFFD ramp 8x"
+  - "65\uFFFD ramp 1x"
+  - "65\uFFFD ramp 2x"
+  - "65\uFFFD ramp corner"
+  - "-65\uFFFD ramp 1x"
+  - "-65\uFFFD ramp 2x"
+  - "-65\uFFFD ramp corner"
+  - "72\uFFFD ramp cone"
+  - "80\uFFFD ramp cone"
+  - "65\uFFFD ramp cone"
+  - "45\uFFFD / 25\uFFFD  ramp cap"
+  - 1x2 print
+  - 1x2x2 print
+  - 1x12 arch
+  - 1x5 half-arch
+  - 1x5 half-arch inverted
+  - 1x2 half-arch curved
+  - 1x3 half-arch curved
+  - 1x6 half-arch curved
+  - 1x3 arabian arch
+  - 1x8x2 arch
+  - house door frameless
+  - glassiest door frameless
+  - window door frameless
+  - jail door frameless
+  - plain door frameless
+  - house door
+  - glassiest door
+  - window door
+  - jail door
+  - plain door
+  - 3x3f
+  - 3x4f
+  - 3x5f
+  - 3x6f
+  - 3x8f
+  - 3x10f
+  - 3x12f
+  - 3x14f
+  - 3x16f
+  - 3x32f
+  - 3x3x1
+  - 3x4x1
+  - 3x5x1
+  - 3x6x1
+  - 3x8x1
+  - 3x10x1
+  - 3x12x1
+  - 3x14x1
+  - 3x16x1
+  - 3x32x1
+  - 1x1x3
+  - 1x2x3
+  - 1x3x3
+  - 1x4x3
+  - 1x5x3
+  - 1x6x3
+  - 1x8x3
+  - 1x10x3
+  - 1x12x3
+  - 1x14x3
+  - 1x16x3
+  - 1x32x3
+  - 2x3x3
+  - 2x5x3
+  - 2x8x3
+  - 2x10x3
+  - 2x12x3
+  - 2x14x3
+  - 2x16x3
+  - 2x32x3
+  - 2x5f
+  - 2x12f
+  - 2x14f
+  - 2x16f
+  - 2x32f
+  - 2x5x1
+  - 2x12x1
+  - 2x14x1
+  - 2x16x1
+  - 2x32x1
+  - 1x1x2
+  - 1x2x2
+  - 1x3x2
+  - 1x4x2
+  - 1x5x2
+  - 1x6x2
+  - 1x8x2
+  - 1x10x2
+  - 1x12x2
+  - 1x14x2
+  - 1x16x2
+  - 1x32x2
+  - 2x2x2
+  - 2x3x2
+  - 2x4x2
+  - 2x5x2
+  - 2x6x2
+  - 2x8x2
+  - 2x10x2
+  - 2x12x2
+  - 2x14x2
+  - 2x16x2
+  - 2x32x2
+  - 2x5x5
+  - 2x7x5
+  - 2x8x5
+  - 2x9x5
+  - 2x10x5
+  - 2x11x5
+  - 2x13x5
+  - 2x14x5
+  - 2x15x5
+  - 2x16x5
+  - 2x32x5
+  - 1x5x5
+  - 1x7x5
+  - 1x8x5
+  - 1x9x5
+  - 1x10x5
+  - 1x11x5
+  - 1x13x5
+  - 1x14x5
+  - 1x15x5
+  - 1x16x5
+  - 1x32x5
+  - 1x5
+  - 1x7
+  - 1x9
+  - 1x11
+  - 1x13
+  - 1x14
+  - 1x15
+  - 1x32
+  - 1x5f
+  - 1x7f
+  - 1x9f
+  - 1x11f
+  - 1x13f
+  - 1x14f
+  - 1x15f
+  - 1x32f
+  - christmas tree
+  - checkpoint
+  - 1x3 arch
+  - 1x4 arch
+  - 1x5 arch
+  - 1x6x1 arch
+  - 1x6x2 arch
+  - 1x8 arch
+  - 1x3 arch up
+  - 1x4 arch up
+  - 1x5 arch up
+  - 1x6x1 arch up
+  - 1x6x2 arch up
+  - 1x8 arch up
+  - antenna
+  - 1x2 ridged
+  - 1x2log
+  - 2x2x2 cone inv
+  - 2x4x3 windscreen
+  - 2x4x3 tube
+  - 2x4x3 windscreen inv
+  - 2x2 disc inv
+  - 1x1 cone inv
+  - 1x4x2vertwing
+  - 1x5x3vertwing
+  - 1x1 octo plate
+  - 1x1 octo
+  - 1x1x2 octo
+  - 2x2 octo plate
+  - 2x2 octo
+  - 2x2x2 octo
+  - 1x2 octo plate90
+  - 1x2 octo brick90
+  - 2x2 octo brick90
+  - 2x2x1 octo cone
+  - 2x2x1 octo cone inv
+  - 2x2x2 octo cone
+  - 2x2x2 octo cone inv
+  - 2x3x2 octo offset
+  - 2x2x2 octo elbow
+  - 2x2x2 octo - elbow
+  - 2x2x2 octo t vert
+  - 2x2x2 octo plus vert
+  - 2x2x2 octo t horz
+  - 2x2x2 octo elbow horz
+  - 2x2x2 octo plus horz
+  - 2x2x2 octo plus plus
+  - 2x2x2 octo t
+  - 2x2x2 octo t inv
+  - 1h panel corner 1x
+  - 1h panel 1x
+  - 1h panel 2x
+  - 1h panel 4x
+  - 2h panel 1x
+  - 2h panel 2x
+  - 2h panel 4x
+  - 4h panel 1x
+  - 4h panel 2x
+  - 4h panel 4x
+  - 4h panel 4x print inside
+  - "45\uFFFD center ramp 1x"
+  - "-45\uFFFD center ramp 1x"
+  - "25\uFFFD center ramp 1x"
+  - "-25\uFFFD center ramp 1x"
+  - "72\uFFFD center ramp 1x"
+  - "-72\uFFFD center ramp 1x"
+  - "80\uFFFD center ramp 1x"
+  - "-80\uFFFD center ramp 1x"
+  - "18\uFFFD center ramp 1x"
+  - "-18\uFFFD center ramp 1x"
+  - "65\uFFFD center ramp 1x"
+  - "-65\uFFFD center ramp 1x"
+  - "45\uFFFD center diag ramp 1x"
+  - "25\uFFFD center diag ramp 1x"
+  - "72\uFFFD center diag ramp 1x"
+  - "80\uFFFD center diag ramp 1x"
+  - "18\uFFFD center diag ramp 1x"
+  - "65\uFFFD center diag ramp 1x"
+  - "45\uFFFD 25\uFFFD adapter a"
+  - "45\uFFFD 25\uFFFD adapter b"
+  - "-45\uFFFD-25\uFFFD inv adapter a"
+  - "-45\uFFFD-25\uFFFD inv adapter b"
+  - "45\uFFFD 25\uFFFD adapter c"
+  - "-45\uFFFD -25\uFFFD inv adapter c"
+  - "45\uFFFD 25\uFFFD adapter d"
+  - "-45\uFFFD -25\uFFFD inv adapter d"
+  - 3x3f print
+  - 3x3f print ceiling
+  - 2x2f print 90
+  - 4x4f round
+  - 6x6f round
+  - 2x2f round ceiling
+  - 4x4f round print
+  - 4x4f round print ceiling
+  - 2x2f round print 90
+  - 2x2x2undercarriage
+  - 1x2 half-round
+  - 1x2f half-round
+  - 4x2f half-round
+  - 6x3f half-round
+  - 1x1f half-round
+  - 1x1 half-round
+  - 1x1 half-round 90
+  - 2x1 half-round 90
+  - 4x1 half-round 90
+  - 1x2 half-round 90
+  - 2x2 half-round 90
+  - 4x2 half-round 90
+  - "25\uFFFDinv ramp corner"
+  - "-25\uFFFD inv ramp corner"
+  - "25\uFFFD crest t"
+  - "45\uFFFD crest t"
+  - "25\uFFFD crest plus"
+  - "45\uFFFD crest plus"
+  - "16.7\uFFFD 1x2 ramp"
+  - "11.31\uFFFD 1x3 ramp"
+  - "8.53\uFFFD 1x4 ramp"
+  - "25\uFFFD crest 2x end"
+  - "45\uFFFD crest 2x end"
+  - "45\uFFFD ramp 3x"
+  - "45\uFFFD ramp 8x"
+  - "45\uFFFD ramp 12x"
+  - "45\uFFFD ramp 16x"
+  - "25\uFFFD ramp 3x"
+  - "25\uFFFD ramp 8x"
+  - "25\uFFFD ramp 12x"
+  - "25\uFFFD ramp 16x"
+  - "-45\uFFFD ramp 3x"
+  - "-45\uFFFD ramp 4x"
+  - "-45\uFFFD ramp 8x"
+  - "-45\uFFFD ramp 12x"
+  - "-45\uFFFD ramp 16x"
+  - "-25\uFFFD ramp 3x"
+  - "-25\uFFFD ramp 4x"
+  - "-25\uFFFD ramp 8x"
+  - "-25\uFFFD ramp 12x"
+  - "-25\uFFFD ramp 16x"
+  - zombie hole
+  - shark hole
+  - horse hole
+  - blockhead hole
+  values:
+  - base/data/bricks/bricks/1x1.blb
+  - base/data/bricks/bricks/1x2.blb
+  - base/data/bricks/bricks/1x3.blb
+  - base/data/bricks/bricks/1x4.blb
+  - base/data/bricks/bricks/1x6.blb
+  - base/data/bricks/bricks/1x8.blb
+  - base/data/bricks/bricks/1x10.blb
+  - base/data/bricks/bricks/1x12.blb
+  - base/data/bricks/bricks/1x16.blb
+  - base/data/bricks/bricks/2x2.blb
+  - base/data/bricks/bricks/2x3.blb
+  - base/data/bricks/bricks/2x4.blb
+  - base/data/bricks/bricks/2x6.blb
+  - base/data/bricks/bricks/2x8.blb
+  - base/data/bricks/bricks/2x10.blb
+  - base/data/bricks/bricks/4x4.blb
+  - base/data/bricks/bricks/4x6.blb
+  - base/data/bricks/bricks/4x8.blb
+  - base/data/bricks/bricks/4x10.blb
+  - base/data/bricks/bricks/4x12.blb
+  - base/data/bricks/bricks/4x16.blb
+  - base/data/bricks/bricks/8x8.blb
+  - base/data/bricks/bricks/8x16.blb
+  - base/data/bricks/bricks/10x10.blb
+  - base/data/bricks/bricks/10x20.blb
+  - base/data/bricks/bricks/12x24.blb
+  - base/data/bricks/bricks/2x2x3.blb
+  - base/data/bricks/bricks/2x4x3.blb
+  - base/data/bricks/bricks/2x6x3.blb
+  - base/data/bricks/bricks/1x1x5.blb
+  - base/data/bricks/bricks/1x2x5.blb
+  - base/data/bricks/bricks/1x3x5.blb
+  - base/data/bricks/bricks/1x4x5.blb
+  - base/data/bricks/bricks/1x6x5.blb
+  - base/data/bricks/bricks/1x12x5.blb
+  - base/data/bricks/bricks/2x2x5.blb
+  - base/data/bricks/bricks/2x3x5.blb
+  - base/data/bricks/bricks/2x4x5.blb
+  - base/data/bricks/bricks/2x6x5.blb
+  - base/data/bricks/bricks/2x12x5.blb
+  - base/data/bricks/flats/1x1f.blb
+  - base/data/bricks/flats/1x2f.blb
+  - base/data/bricks/flats/1x3f.blb
+  - base/data/bricks/flats/1x4f.blb
+  - base/data/bricks/flats/1x6f.blb
+  - base/data/bricks/flats/1x8f.blb
+  - base/data/bricks/flats/1x10f.blb
+  - base/data/bricks/flats/1x12f.blb
+  - base/data/bricks/flats/1x16f.blb
+  - base/data/bricks/flats/2x2f.blb
+  - base/data/bricks/flats/2x3f.blb
+  - base/data/bricks/flats/2x4f.blb
+  - base/data/bricks/flats/2x6f.blb
+  - base/data/bricks/flats/2x8f.blb
+  - base/data/bricks/flats/2x10f.blb
+  - base/data/bricks/flats/4x4f.blb
+  - base/data/bricks/flats/4x6f.blb
+  - base/data/bricks/flats/4x8f.blb
+  - base/data/bricks/flats/4x10f.blb
+  - base/data/bricks/flats/4x12f.blb
+  - base/data/bricks/flats/4x16f.blb
+  - base/data/bricks/flats/6x6f.blb
+  - base/data/bricks/flats/6x8f.blb
+  - base/data/bricks/flats/6x10f.blb
+  - base/data/bricks/flats/6x12f.blb
+  - base/data/bricks/flats/6x16f.blb
+  - base/data/bricks/flats/6x24f.blb
+  - base/data/bricks/flats/8x8f.blb
+  - base/data/bricks/flats/8x16f.blb
+  - base/data/bricks/rounds/1x1round.blb
+  - base/data/bricks/rounds/1x1cone.blb
+  - base/data/bricks/rounds/2x2round.blb
+  - base/data/bricks/rounds/2x2x2cone.blb
+  - base/data/bricks/rounds/1x1fround.blb
+  - base/data/bricks/rounds/2x2fround.blb
+  - base/data/bricks/rounds/2x2disc.blb
+  - base/data/bricks/special/3x1x7wall.blb
+  - base/data/bricks/special/4x1x5window.blb
+  - base/data/bricks/special/2x2x5girder.blb
+  - base/data/bricks/special/pinetree.blb
+  - base/data/bricks/special/4x1x2fence.blb
+  - base/data/bricks/ramps/1x3ramp.blb
+  - base/data/bricks/ramps/2x3ramp.blb
+  - base/data/bricks/ramps/4x3ramp.blb
+  - base/data/bricks/ramps/1x3rampup.blb
+  - base/data/bricks/ramps/2x3rampup.blb
+  - base/data/bricks/ramps/3x3rampcorner.blb
+  - base/data/bricks/ramps/3x3rampupcorner.blb
+  - base/data/bricks/ramps/4x2crestlow.blb
+  - base/data/bricks/ramps/2x2crestlow.blb
+  - base/data/bricks/ramps/1x2crestlow.blb
+  - base/data/bricks/ramps/1x2crestlowend.blb
+  - base/data/bricks/ramps/2x2crestlowcorner.blb
+  - base/data/bricks/ramps/1x2ramp.blb
+  - base/data/bricks/ramps/2x2ramp.blb
+  - base/data/bricks/ramps/4x2ramp.blb
+  - base/data/bricks/ramps/1x2rampup.blb
+  - base/data/bricks/ramps/2x2rampup.blb
+  - base/data/bricks/ramps/2x2rampcorner.blb
+  - base/data/bricks/ramps/2x2rampupcorner.blb
+  - base/data/bricks/ramps/4x2cresthigh.blb
+  - base/data/bricks/ramps/2x2cresthigh.blb
+  - base/data/bricks/ramps/1x2cresthigh.blb
+  - base/data/bricks/ramps/1x2cresthighend.blb
+  - base/data/bricks/ramps/2x2cresthighcorner.blb
+  - base/data/bricks/ramps/1x2x3ramp.blb
+  - base/data/bricks/ramps/2x2x3ramp.blb
+  - base/data/bricks/ramps/2x2x3rampcorner.blb
+  - base/data/bricks/ramps/1x2x3rampup.blb
+  - base/data/bricks/ramps/2x2x3rampup.blb
+  - base/data/bricks/ramps/2x2x3rampupcorner.blb
+  - base/data/bricks/ramps/1x2x5ramp.blb
+  - base/data/bricks/ramps/2x2x5ramp.blb
+  - base/data/bricks/ramps/2x2x5rampcorner.blb
+  - base/data/bricks/ramps/1x2x5rampup.blb
+  - base/data/bricks/ramps/2x2x5rampup.blb
+  - base/data/bricks/ramps/2x2x5rampupcorner.blb
+  - base/data/bricks/baseplates/16x16f.blb
+  - base/data/bricks/baseplates/16x32f.blb
+  - base/data/bricks/baseplates/32x32f.blb
+  - base/data/bricks/baseplates/48x48f.blb
+  - base/data/bricks/baseplates/64x64f.blb
+  - base/data/bricks/baseplates/32x32froads.blb
+  - base/data/bricks/baseplates/32x32froadt.blb
+  - base/data/bricks/baseplates/32x32froadc.blb
+  - base/data/bricks/baseplates/32x32froadx.blb
+  - base/data/bricks/ramps/2x2rampprint.blb
+  - base/data/bricks/ramps/2x2rampupprint.blb
+  - base/data/bricks/flats/2x2fprint.blb
+  - base/data/bricks/flats/1x2fprint.blb
+  - base/data/bricks/flats/1x1fprint.blb
+  - base/data/bricks/bricks/1x1print.blb
+  - base/data/bricks/bricks/1x4x4print.blb
+  - base/data/bricks/special/1x1music.blb
+  - base/data/bricks/special/spawnpoint.blb
+  - base/data/bricks/special/vehiclespawn.blb
+  - add-ons/brick_large_cubes/64x cube.blb
+  - add-ons/brick_large_cubes/32x cube.blb
+  - add-ons/brick_large_cubes/16x cube.blb
+  - add-ons/brick_large_cubes/8x cube.blb
+  - add-ons/brick_large_cubes/4x cube.blb
+  - add-ons/brick_large_cubes/8x water.blb
+  - add-ons/brick_large_cubes/8x river.blb
+  - add-ons/brick_large_cubes/8x rapids.blb
+  - add-ons/brick_large_cubes/32x water.blb
+  - base/data/bricks/flats/8x8f.blb
+  - base/data/bricks/flats/8x8f.blb
+  - base/data/bricks/flats/6x6f.blb
+  - base/data/bricks/special/vehiclespawn.blb
+  - base/data/bricks/special/vehiclespawn.blb
+  - add-ons/brick_zones/forcegate.blb
+  - add-ons/brick_zones/conveyorbelt.blb
+  - add-ons/brick_large_cubes/8x cube.blb
+  - add-ons/brick_large_cubes/8x water.blb
+  - add-ons/brick_large_cubes/8x water.blb
+  - base/data/bricks/bricks/1x4x5.blb
+  - add-ons/brick_zones/ladder.blb
+  - add-ons/brick_large_cubes/8x cube.blb
+  - add-ons/brick_large_cubes/16x cube.blb
+  - add-ons/brick_large_cubes/32x cube.blb
+  - add-ons/brick_large_cubes/64x cube.blb
+  - base/data/bricks/flats/4x4f.blb
+  - base/data/bricks/flats/2x4f.blb
+  - base/data/bricks/flats/8x8f.blb
+  - base/data/bricks/flats/4x8f.blb
+  - base/data/bricks/flats/6x12f.blb
+  - add-ons/brick_window/1x1x3window.blb
+  - add-ons/brick_window/1x2x3window.blb
+  - add-ons/brick_window/1x4x3window.blb
+  - add-ons/brick_window/1x4x2window.blb
+  - add-ons/brick_window/1x3x2window.blb
+  - add-ons/brick_window/1x2x2window.blb
+  - add-ons/brick_window/1x1x2window.blb
+  - add-ons/brick_window/1x2x1window.blb
+  - add-ons/brick_window/1x1x1window.blb
+  - add-ons/brick_window/2x4x5window.blb
+  - add-ons/brick_window/3x4x6window.blb
+  - add-ons/brick_window/4x4x3window.blb
+  - add-ons/brick_window/4x5x2window.blb
+  - add-ons/brick_window/3x8x6baywindow.blb
+  - add-ons/brick_wedge/bricks/1x1fwedge.blb
+  - add-ons/brick_wedge/bricks/1x1wedge.blb
+  - add-ons/brick_wedge/bricks/1x1x5wedge.blb
+  - add-ons/brick_wedge/bricks/2x3fwedgeleft.blb
+  - add-ons/brick_wedge/bricks/2x3fwedgeright.blb
+  - add-ons/brick_wedge/bricks/2x3wedgeleft.blb
+  - add-ons/brick_wedge/bricks/2x3wedgeright.blb
+  - add-ons/brick_wedge/bricks/2x3x5wedgeleft.blb
+  - add-ons/brick_wedge/bricks/2x3x5wedgeright.blb
+  - add-ons/brick_wedge/bricks/2x4fwedgeleft.blb
+  - add-ons/brick_wedge/bricks/2x4fwedgeright.blb
+  - add-ons/brick_wedge/bricks/2x4wedgeleft.blb
+  - add-ons/brick_wedge/bricks/2x4wedgeright.blb
+  - add-ons/brick_wedge/bricks/2x4x5wedgeleft.blb
+  - add-ons/brick_wedge/bricks/2x4x5wedgeright.blb
+  - add-ons/brick_wedge/bricks/3x3fwedge.blb
+  - add-ons/brick_wedge/bricks/3x3wedge.blb
+  - add-ons/brick_wedge/bricks/3x3x5wedge.blb
+  - add-ons/brick_wedge/bricks/4x8wingleft.blb
+  - add-ons/brick_wedge/bricks/4x8wingright.blb
+  - add-ons/brick_wedge/bricks/3x6wingl.blb
+  - add-ons/brick_wedge/bricks/3x6wingr.blb
+  - add-ons/brick_wedge/bricks/3x12wingl.blb
+  - add-ons/brick_wedge/bricks/3x12wingr.blb
+  - add-ons/brick_wedge/bricks/4x4wedge.blb
+  - add-ons/brick_wedge/bricks/6x6wedge.blb
+  - add-ons/brick_wedge/bricks/8x8wedge.blb
+  - add-ons/brick_wedge/bricks/4x4wingl.blb
+  - add-ons/brick_wedge/bricks/4x4wingr.blb
+  - add-ons/brick_wedge/bricks/3x8wingl.blb
+  - add-ons/brick_wedge/bricks/3x8wingr.blb
+  - add-ons/brick_wedge/bricks/6x12wingl.blb
+  - add-ons/brick_wedge/bricks/6x12wingr.blb
+  - add-ons/brick_wedge/bricks/4x9wing.blb
+  - add-ons/brick_wedge/bricks/2x4rampwedger.blb
+  - add-ons/brick_wedge/bricks/2x4rampwedgel.blb
+  - add-ons/brick_wedge/bricks/4x4rampwedge.blb
+  - add-ons/brick_wedge/bricks/4x4rampwedgeinv.blb
+  - add-ons/brick_wedge/bricks/2x6curvedrampwedgeright.blb
+  - add-ons/brick_wedge/bricks/2x6curvedrampwedgerightinv.blb
+  - add-ons/brick_wedge/bricks/2x6curvedrampwedgeleft.blb
+  - add-ons/brick_wedge/bricks/2x6curvedrampwedgeleftinv.blb
+  - add-ons/brick_wedge/bricks/2x3x8curvedl.blb
+  - add-ons/brick_wedge/bricks/2x3x8curvedr.blb
+  - add-ons/brick_wedge/bricks/10x3curvedl.blb
+  - add-ons/brick_wedge/bricks/10x3curvedr.blb
+  - add-ons/brick_wedge/bricks/16x4curved.blb
+  - add-ons/brick_wedge/bricks/4x4taper.blb
+  - add-ons/brick_wedge/bricks/4x6rampwedgecutout.blb
+  - add-ons/brick_wedge/bricks/4x6rampedinv.blb
+  - add-ons/brick_wedge/bricks/6x8ramped.blb
+  - add-ons/brick_wedge/bricks/2x4slopedr.blb
+  - add-ons/brick_wedge/bricks/2x4slopedl.blb
+  - add-ons/brick_wedge/bricks/2x4doublewedge.blb
+  - add-ons/brick_wedge/bricks/3x4arrow.blb
+  - add-ons/brick_wedge/bricks/4x4arrow.blb
+  - add-ons/brick_wedge/bricks/8x8arrow.blb
+  - add-ons/brick_wedge/bricks/4x4wedgelinked.blb
+  - add-ons/brick_wedge/bricks/3x6fwedge.blb
+  - add-ons/brick_wedge/bricks/4x6fwedge.blb
+  - add-ons/brick_v15/8x8grill.blb
+  - add-ons/brick_v15/1x4x2bars.blb
+  - add-ons/brick_v15/4x1x2picket.blb
+  - add-ons/brick_v15/2x2corner.blb
+  - add-ons/brick_treasure_chest/chest.blb
+  - add-ons/brick_tileplates/1x1f_tile.blb
+  - add-ons/brick_tileplates/1x2f_tile.blb
+  - add-ons/brick_tileplates/1x3f_tile.blb
+  - add-ons/brick_tileplates/1x4f_tile.blb
+  - add-ons/brick_tileplates/1x6f_tile.blb
+  - add-ons/brick_tileplates/1x8f_tile.blb
+  - add-ons/brick_tileplates/2x2f_tile.blb
+  - add-ons/brick_tileplates/2x3f_tile.blb
+  - add-ons/brick_tileplates/2x4f_tile.blb
+  - add-ons/brick_tileplates/2x6f_tile.blb
+  - add-ons/brick_tileplates/2x8f_tile.blb
+  - add-ons/brick_tileplates/3x3f_tile.blb
+  - add-ons/brick_tileplates/4x4f_tile.blb
+  - add-ons/brick_tileplates/1x1corner_tile.blb
+  - add-ons/brick_tileplates/2x2corner_tile.blb
+  - add-ons/brick_thickpoles/brick_tpole1x1f.blb
+  - add-ons/brick_thickpoles/brick_tpole1x1.blb
+  - add-ons/brick_thickpoles/brick_tpole1x3.blb
+  - add-ons/brick_teledoor/teledoor.blb
+  - add-ons/brick_poster_8x/poster 8x.blb
+  - add-ons/brick_poleadapters/1x1fpolefull.blb
+  - add-ons/brick_poleadapters/1x1fhorizcorner.blb
+  - add-ons/brick_poleadapters/1x1fvertcorner.blb
+  - add-ons/brick_poleadapters/1x1fvertcornerd.blb
+  - add-ons/brick_poleadapters/1x1fhorizt.blb
+  - add-ons/brick_poleadapters/1x1fverttd.blb
+  - add-ons/brick_poleadapters/1x1fverttu.blb
+  - add-ons/brick_poleadapters/1x1fhorizplus.blb
+  - add-ons/brick_poleadapters/1x1fvertplus.blb
+  - add-ons/brick_poleadapters/1x1x3pole.blb
+  - add-ons/brick_poleadapters/1x1pole.blb
+  - add-ons/brick_poleadapters/1x1fpole.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/32crinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/32ccainvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/32ccbinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/32cccinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/32ccdinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/16crinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/16ccainvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/16ccbinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/16cccinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/16ccdinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/8crinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/8ccainvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/8ccbinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/8cccinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/steep/8ccdinvsteep.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/64crinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/64ccainv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/64ccbinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/64cccinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/64ccdinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/32crinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/32ccainv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/32ccbinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/32cccinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/32ccdinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/16crinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/16ccainv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/16ccbinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/16cccinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/16ccdinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/8crinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/8ccainv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/8ccbinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/8cccinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/full/8ccdinv.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/64crinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/64ccainv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/64ccbinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/64cccinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/64ccdinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/32crinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/32ccainv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/32ccbinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/32cccinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/32ccdinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/16crinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/16ccainv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/16ccbinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/16cccinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/16ccdinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/8crinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/8ccainv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/8ccbinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/8cccinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/3-4/8ccdinv3-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/64crinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/64ccainv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/64ccbinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/64cccinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/64ccdinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/32crinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/32ccainv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/32ccbinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/32cccinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/32ccdinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/16crinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/16ccainv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/16ccbinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/16cccinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/16ccdinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/8crinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/8ccainv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/8ccbinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/8cccinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-2/8ccdinv1-2.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/64crinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/64ccainv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/64ccbinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/64cccinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/64ccdinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/32crinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/32ccainv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/32ccbinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/32cccinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/32ccdinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/16crinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/16ccainv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/16ccbinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/16cccinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/16ccdinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/8crinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/8ccainv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/8ccbinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/8cccinv1-4.blb
+  - add-ons/brick_modter_invertedpack/bricks/1-4/8ccdinv1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/32csteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/32cwsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/32crsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/32ccasteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/32ccbsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/32cccsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/32ccdsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/16csteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/16cwsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/16crsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/16ccasteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/16ccbsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/16cccsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/16ccdsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/8csteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/8cwsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/8crsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/8ccasteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/8ccbsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/8cccsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/steep/8ccdsteep.blb
+  - add-ons/brick_modter_basicpack/bricks/full/64c.blb
+  - add-ons/brick_modter_basicpack/bricks/full/64cw.blb
+  - add-ons/brick_modter_basicpack/bricks/full/64cr.blb
+  - add-ons/brick_modter_basicpack/bricks/full/64cca.blb
+  - add-ons/brick_modter_basicpack/bricks/full/64ccb.blb
+  - add-ons/brick_modter_basicpack/bricks/full/64ccc.blb
+  - add-ons/brick_modter_basicpack/bricks/full/64ccd.blb
+  - add-ons/brick_modter_basicpack/bricks/full/32c.blb
+  - add-ons/brick_modter_basicpack/bricks/full/32cw.blb
+  - add-ons/brick_modter_basicpack/bricks/full/32cr.blb
+  - add-ons/brick_modter_basicpack/bricks/full/32cca.blb
+  - add-ons/brick_modter_basicpack/bricks/full/32ccb.blb
+  - add-ons/brick_modter_basicpack/bricks/full/32ccc.blb
+  - add-ons/brick_modter_basicpack/bricks/full/32ccd.blb
+  - add-ons/brick_modter_basicpack/bricks/full/16c.blb
+  - add-ons/brick_modter_basicpack/bricks/full/16cw.blb
+  - add-ons/brick_modter_basicpack/bricks/full/16cr.blb
+  - add-ons/brick_modter_basicpack/bricks/full/16cca.blb
+  - add-ons/brick_modter_basicpack/bricks/full/16ccb.blb
+  - add-ons/brick_modter_basicpack/bricks/full/16ccc.blb
+  - add-ons/brick_modter_basicpack/bricks/full/16ccd.blb
+  - add-ons/brick_modter_basicpack/bricks/full/8c.blb
+  - add-ons/brick_modter_basicpack/bricks/full/8cw.blb
+  - add-ons/brick_modter_basicpack/bricks/full/8cr.blb
+  - add-ons/brick_modter_basicpack/bricks/full/8cca.blb
+  - add-ons/brick_modter_basicpack/bricks/full/8ccb.blb
+  - add-ons/brick_modter_basicpack/bricks/full/8ccc.blb
+  - add-ons/brick_modter_basicpack/bricks/full/8ccd.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/64c3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/64cw3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/64cr3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/64cca3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/64ccb3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/64ccc3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/64ccd3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/32c3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/32cw3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/32cr3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/32cca3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/32ccb3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/32ccc3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/32ccd3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/16c3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/16cw3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/16cr3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/16cca3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/16ccb3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/16ccc3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/16ccd3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/8c3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/8cw3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/8cr3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/8cca3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/8ccb3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/8ccc3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/3-4/8ccd3-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/64c1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/64cw1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/64cr1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/64cca1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/64ccb1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/64ccc1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/64ccd1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/32c1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/32cw1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/32cr1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/32cca1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/32ccb1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/32ccc1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/32ccd1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/16c1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/16cw1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/16cr1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/16cca1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/16ccb1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/16ccc1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/16ccd1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/8c1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/8cw1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/8cr1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/8cca1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/8ccb1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/8ccc1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-2/8ccd1-2.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/64c1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/64cw1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/64cr1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/64cca1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/64ccb1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/64ccc1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/64ccd1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/32c1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/32cw1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/32cr1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/32cca1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/32ccb1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/32ccc1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/32ccd1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/16c1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/16cw1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/16cr1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/16cca1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/16ccb1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/16ccc1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/16ccd1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/8c1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/8cw1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/8cr1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/8cca1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/8ccb1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/8ccc1-4.blb
+  - add-ons/brick_modter_basicpack/bricks/1-4/8ccd1-4.blb
+  - add-ons/brick_modter_4xpack/bricks/4c.blb
+  - add-ons/brick_modter_4xpack/bricks/4cw.blb
+  - add-ons/brick_modter_4xpack/bricks/4cr.blb
+  - add-ons/brick_modter_4xpack/bricks/4crinv.blb
+  - add-ons/brick_modter_4xpack/bricks/4cca.blb
+  - add-ons/brick_modter_4xpack/bricks/4ccainv.blb
+  - add-ons/brick_modter_4xpack/bricks/4ccb.blb
+  - add-ons/brick_modter_4xpack/bricks/4ccbinv.blb
+  - add-ons/brick_modter_4xpack/bricks/4ccc.blb
+  - add-ons/brick_modter_4xpack/bricks/4cccinv.blb
+  - add-ons/brick_modter_4xpack/bricks/4ccd.blb
+  - add-ons/brick_modter_4xpack/bricks/4ccdinv.blb
+  - add-ons/brick_halloween/2012/skull_open.blb
+  - add-ons/brick_halloween/2012/skull.blb
+  - add-ons/brick_halloween/2012/skull_angry_open.blb
+  - add-ons/brick_halloween/2012/skull_angry.blb
+  - add-ons/brick_halloween/2012/skull_sad_open.blb
+  - add-ons/brick_halloween/2012/skull_sad.blb
+  - add-ons/brick_halloween/2012/skull_murray_open.blb
+  - add-ons/brick_halloween/2012/skull_murray.blb
+  - add-ons/brick_halloween/2012/skull_cool_open.blb
+  - add-ons/brick_halloween/2012/skull_cool.blb
+  - add-ons/brick_halloween/2012/coffin.blb
+  - add-ons/brick_halloween/2012/coffin_down.blb
+  - add-ons/brick_halloween/pumpkin_base.blb
+  - add-ons/brick_halloween/pumpkin_face.blb
+  - add-ons/brick_halloween/pumpkin_scared.blb
+  - add-ons/brick_halloween/pumpkin_ascii.blb
+  - add-ons/brick_halloween/gravestone.blb
+  - add-ons/brick_fence/bricks/1x4fence.blb
+  - add-ons/brick_fence/bricks/1x6x2archedfence.blb
+  - add-ons/brick_fence/bricks/1x8countryfence.blb
+  - add-ons/brick_fence/bricks/4x4x2roundcornerbars.blb
+  - add-ons/brick_fence/bricks/1x6x2trainfence.blb
+  - add-ons/brick_fence/bricks/1x4x2studdedrail.blb
+  - add-ons/brick_fence/bricks/1x6rail.blb
+  - add-ons/brick_fence/bricks/1x8x2rail.blb
+  - add-ons/brick_fence/bricks/1x4x2rail.blb
+  - add-ons/brick_extraramps/1x6curvedramp.blb
+  - add-ons/brick_extraramps/2x6curvedramp.blb
+  - add-ons/brick_extraramps/1x6curvedrampup.blb
+  - add-ons/brick_extraramps/2x6curvedrampup.blb
+  - add-ons/brick_extraramps/2x4curvedramp.blb
+  - add-ons/brick_extraramps/1x3curvedramp.blb
+  - add-ons/brick_extraramps/1x1ramp.blb
+  - add-ons/brick_extraramps/6x8ramp.blb
+  - add-ons/brick_extraramps/1x2x2ramp.blb
+  - add-ons/brick_extraramps/2x2x2ramp.blb
+  - add-ons/brick_extraramps/2x2x2rampcorner.blb
+  - add-ons/brick_extraramps/1x2x2rampup.blb
+  - add-ons/brick_extraramps/2x2x2rampup.blb
+  - add-ons/brick_extraramps/2x2x2rampupcorner.blb
+  - add-ons/brick_extraramps/2x2x2rampcone.blb
+  - add-ons/brick_extraramps/2x2x3rampcone.blb
+  - add-ons/brick_extraramps/2x2rampcone.blb
+  - add-ons/brick_extraramps/3x4rampcap.blb
+  - add-ons/brick_extraprints/1x2print.blb
+  - add-ons/brick_extraprints/1x2x2print.blb
+  - add-ons/brick_extraarches/1x12arch.blb
+  - add-ons/brick_extraarches/1x5halfarch.blb
+  - add-ons/brick_extraarches/1x5halfarchinv.blb
+  - add-ons/brick_extraarches/1x2halfarchcurved.blb
+  - add-ons/brick_extraarches/1x3halfarchcurved.blb
+  - add-ons/brick_extraarches/1x6halfarchcurved.blb
+  - add-ons/brick_extraarches/1x3arabian.blb
+  - add-ons/brick_extraarches/1x8x2arch.blb
+  - add-ons/brick_doors_frameless/bricks/door_house_closed.blb
+  - add-ons/brick_doors_frameless/bricks/door_glass_closedcw.blb
+  - add-ons/brick_doors_frameless/bricks/door_housewindow_closed.blb
+  - add-ons/brick_doors_frameless/bricks/door_jail_closed.blb
+  - add-ons/brick_doors_frameless/bricks/door_plain_closed.blb
+  - add-ons/brick_doors/bricks/door_house_closed.blb
+  - add-ons/brick_doors/bricks/door_glass_closedcw.blb
+  - add-ons/brick_doors/bricks/door_housewindow_closed.blb
+  - add-ons/brick_doors/bricks/door_jail_closed.blb
+  - add-ons/brick_doors/bricks/door_plain_closed.blb
+  - add-ons/brick_demiansbb3/3x3f.blb
+  - add-ons/brick_demiansbb3/3x4f.blb
+  - add-ons/brick_demiansbb3/3x5f.blb
+  - add-ons/brick_demiansbb3/3x6f.blb
+  - add-ons/brick_demiansbb3/3x8f.blb
+  - add-ons/brick_demiansbb3/3x10f.blb
+  - add-ons/brick_demiansbb3/3x12f.blb
+  - add-ons/brick_demiansbb3/3x14f.blb
+  - add-ons/brick_demiansbb3/3x16f.blb
+  - add-ons/brick_demiansbb3/3x32f.blb
+  - add-ons/brick_demiansbb3/3x3x1.blb
+  - add-ons/brick_demiansbb3/3x4x1.blb
+  - add-ons/brick_demiansbb3/3x5x1.blb
+  - add-ons/brick_demiansbb3/3x6x1.blb
+  - add-ons/brick_demiansbb3/3x8x1.blb
+  - add-ons/brick_demiansbb3/3x10x1.blb
+  - add-ons/brick_demiansbb3/3x12x1.blb
+  - add-ons/brick_demiansbb3/3x14x1.blb
+  - add-ons/brick_demiansbb3/3x16x1.blb
+  - add-ons/brick_demiansbb3/3x32x1.blb
+  - add-ons/brick_demiansbb3/1x1x3.blb
+  - add-ons/brick_demiansbb3/1x2x3.blb
+  - add-ons/brick_demiansbb3/1x3x3.blb
+  - add-ons/brick_demiansbb3/1x4x3.blb
+  - add-ons/brick_demiansbb3/1x5x3.blb
+  - add-ons/brick_demiansbb3/1x6x3.blb
+  - add-ons/brick_demiansbb3/1x8x3.blb
+  - add-ons/brick_demiansbb3/1x10x3.blb
+  - add-ons/brick_demiansbb3/1x12x3.blb
+  - add-ons/brick_demiansbb3/1x14x3.blb
+  - add-ons/brick_demiansbb3/1x16x3.blb
+  - add-ons/brick_demiansbb3/1x32x3.blb
+  - add-ons/brick_demiansbb3/2x3x3.blb
+  - add-ons/brick_demiansbb3/2x5x3.blb
+  - add-ons/brick_demiansbb3/2x8x3.blb
+  - add-ons/brick_demiansbb3/2x10x3.blb
+  - add-ons/brick_demiansbb3/2x12x3.blb
+  - add-ons/brick_demiansbb3/2x14x3.blb
+  - add-ons/brick_demiansbb3/2x16x3.blb
+  - add-ons/brick_demiansbb3/2x32x3.blb
+  - add-ons/brick_demiansbb2/2x5f.blb
+  - add-ons/brick_demiansbb2/2x12f.blb
+  - add-ons/brick_demiansbb2/2x14f.blb
+  - add-ons/brick_demiansbb2/2x16f.blb
+  - add-ons/brick_demiansbb2/2x32f.blb
+  - add-ons/brick_demiansbb2/2x5x1.blb
+  - add-ons/brick_demiansbb2/2x12x1.blb
+  - add-ons/brick_demiansbb2/2x14x1.blb
+  - add-ons/brick_demiansbb2/2x16x1.blb
+  - add-ons/brick_demiansbb2/2x32x1.blb
+  - add-ons/brick_demiansbb2/1x1x2.blb
+  - add-ons/brick_demiansbb2/1x2x2.blb
+  - add-ons/brick_demiansbb2/1x3x2.blb
+  - add-ons/brick_demiansbb2/1x4x2.blb
+  - add-ons/brick_demiansbb2/1x5x2.blb
+  - add-ons/brick_demiansbb2/1x6x2.blb
+  - add-ons/brick_demiansbb2/1x8x2.blb
+  - add-ons/brick_demiansbb2/1x10x2.blb
+  - add-ons/brick_demiansbb2/1x12x2.blb
+  - add-ons/brick_demiansbb2/1x14x2.blb
+  - add-ons/brick_demiansbb2/1x16x2.blb
+  - add-ons/brick_demiansbb2/1x32x2.blb
+  - add-ons/brick_demiansbb2/2x2x2.blb
+  - add-ons/brick_demiansbb2/2x3x2.blb
+  - add-ons/brick_demiansbb2/2x4x2.blb
+  - add-ons/brick_demiansbb2/2x5x2.blb
+  - add-ons/brick_demiansbb2/2x6x2.blb
+  - add-ons/brick_demiansbb2/2x8x2.blb
+  - add-ons/brick_demiansbb2/2x10x2.blb
+  - add-ons/brick_demiansbb2/2x12x2.blb
+  - add-ons/brick_demiansbb2/2x14x2.blb
+  - add-ons/brick_demiansbb2/2x16x2.blb
+  - add-ons/brick_demiansbb2/2x32x2.blb
+  - add-ons/brick_demiansbb2/2x5x5.blb
+  - add-ons/brick_demiansbb2/2x7x5.blb
+  - add-ons/brick_demiansbb2/2x8x5.blb
+  - add-ons/brick_demiansbb2/2x9x5.blb
+  - add-ons/brick_demiansbb2/2x10x5.blb
+  - add-ons/brick_demiansbb2/2x11x5.blb
+  - add-ons/brick_demiansbb2/2x13x5.blb
+  - add-ons/brick_demiansbb2/2x14x5.blb
+  - add-ons/brick_demiansbb2/2x15x5.blb
+  - add-ons/brick_demiansbb2/2x16x5.blb
+  - add-ons/brick_demiansbb2/2x32x5.blb
+  - add-ons/brick_demiansbb/1x5x5.blb
+  - add-ons/brick_demiansbb/1x7x5.blb
+  - add-ons/brick_demiansbb/1x8x5.blb
+  - add-ons/brick_demiansbb/1x9x5.blb
+  - add-ons/brick_demiansbb/1x10x5.blb
+  - add-ons/brick_demiansbb/1x11x5.blb
+  - add-ons/brick_demiansbb/1x13x5.blb
+  - add-ons/brick_demiansbb/1x14x5.blb
+  - add-ons/brick_demiansbb/1x15x5.blb
+  - add-ons/brick_demiansbb/1x16x5.blb
+  - add-ons/brick_demiansbb/1x32x5.blb
+  - add-ons/brick_demiansbb/1x5x1.blb
+  - add-ons/brick_demiansbb/1x7x1.blb
+  - add-ons/brick_demiansbb/1x9x1.blb
+  - add-ons/brick_demiansbb/1x11x1.blb
+  - add-ons/brick_demiansbb/1x13x1.blb
+  - add-ons/brick_demiansbb/1x14x1.blb
+  - add-ons/brick_demiansbb/1x15x1.blb
+  - add-ons/brick_demiansbb/1x32x1.blb
+  - add-ons/brick_demiansbb/1x5f.blb
+  - add-ons/brick_demiansbb/1x7f.blb
+  - add-ons/brick_demiansbb/1x9f.blb
+  - add-ons/brick_demiansbb/1x11f.blb
+  - add-ons/brick_demiansbb/1x13f.blb
+  - add-ons/brick_demiansbb/1x14f.blb
+  - add-ons/brick_demiansbb/1x15f.blb
+  - add-ons/brick_demiansbb/1x32f.blb
+  - add-ons/brick_christmas_tree/christmastree.blb
+  - add-ons/brick_checkpoint/checkpoint.blb
+  - add-ons/brick_arch/1x3arch.blb
+  - add-ons/brick_arch/1x4arch.blb
+  - add-ons/brick_arch/1x5arch.blb
+  - add-ons/brick_arch/1x6x1arch.blb
+  - add-ons/brick_arch/1x6x2arch.blb
+  - add-ons/brick_arch/1x8arch.blb
+  - add-ons/brick_arch/1x3archup.blb
+  - add-ons/brick_arch/1x4archup.blb
+  - add-ons/brick_arch/1x5archup.blb
+  - add-ons/brick_arch/1x6x1archup.blb
+  - add-ons/brick_arch/1x6x2archup.blb
+  - add-ons/brick_arch/1x8archup.blb
+  - add-ons/brick_1randompack/1x1x5antenna.blb
+  - add-ons/brick_1randompack/1x2ridged.blb
+  - add-ons/brick_1randompack/1x2log.blb
+  - add-ons/brick_1randompack/2x2x2coneinv.blb
+  - add-ons/brick_1randompack/2x4x3windscreen.blb
+  - add-ons/brick_1randompack/2x4x3tube.blb
+  - add-ons/brick_1randompack/2x4x3windscreenup.blb
+  - add-ons/brick_1randompack/2x2discinv.blb
+  - add-ons/brick_1randompack/1x1coneinv.blb
+  - add-ons/brick_1randompack/1x4x2vertwing.blb
+  - add-ons/brick_1randompack/1x5x3vertwing.blb
+  - add-ons/brick_1randompack/1x1octoplate.blb
+  - add-ons/brick_1randompack/1x1x1octobrick.blb
+  - add-ons/brick_1randompack/1x1x2octobrick.blb
+  - add-ons/brick_1randompack/2x2octoplate.blb
+  - add-ons/brick_1randompack/2x2x1octobrick.blb
+  - add-ons/brick_1randompack/2x2x2octobrick.blb
+  - add-ons/brick_1randompack/1x2octoplate90.blb
+  - add-ons/brick_1randompack/1x2octobrick90.blb
+  - add-ons/brick_1randompack/2x2octobrick90.blb
+  - add-ons/brick_1randompack/2x2x1octocone.blb
+  - add-ons/brick_1randompack/2x2x1octoconeinv.blb
+  - add-ons/brick_1randompack/2x2x2octocone.blb
+  - add-ons/brick_1randompack/2x2x2octoconeinv.blb
+  - add-ons/brick_1randompack/2x3x2octobend.blb
+  - add-ons/brick_1randompack/2x2x2octoelbow.blb
+  - add-ons/brick_1randompack/2x2x2octoelbowup.blb
+  - add-ons/brick_1randompack/2x2x2octotvert.blb
+  - add-ons/brick_1randompack/2x2x2octoplusvert.blb
+  - add-ons/brick_1randompack/2x2x2octothorz.blb
+  - add-ons/brick_1randompack/2x2x2octoelbowhorz.blb
+  - add-ons/brick_1randompack/2x2x2octoplushorz.blb
+  - add-ons/brick_1randompack/2x2x2octoplusplus.blb
+  - add-ons/brick_1randompack/2x2x2octot.blb
+  - add-ons/brick_1randompack/2x2x2octotup.blb
+  - add-ons/brick_1randompack/1x1x1panelcorner.blb
+  - add-ons/brick_1randompack/1x1x1panel.blb
+  - add-ons/brick_1randompack/1x2x1panel.blb
+  - add-ons/brick_1randompack/1x4x1panel.blb
+  - add-ons/brick_1randompack/1x1x2panel.blb
+  - add-ons/brick_1randompack/1x2x2panel.blb
+  - add-ons/brick_1randompack/1x4x2panel.blb
+  - add-ons/brick_1randompack/1x1x4panel.blb
+  - add-ons/brick_1randompack/1x2x4panel.blb
+  - add-ons/brick_1randompack/1x4x4panel.blb
+  - add-ons/brick_1randompack/1x4x4panelprintinside.blb
+  - add-ons/brick_1randompack/1x3rampcenter.blb
+  - add-ons/brick_1randompack/1x3rampcenterup.blb
+  - add-ons/brick_1randompack/1x5rampcenter.blb
+  - add-ons/brick_1randompack/1x5rampcenterup.blb
+  - add-ons/brick_1randompack/1x3x3rampcenter.blb
+  - add-ons/brick_1randompack/1x3x3rampcenterup.blb
+  - add-ons/brick_1randompack/1x3x5rampcenter.blb
+  - add-ons/brick_1randompack/1x3x5rampcenterup.blb
+  - add-ons/brick_1randompack/1x4rampcenter.blb
+  - add-ons/brick_1randompack/1x4rampcenterup.blb
+  - add-ons/brick_1randompack/1x2x2rampcenter.blb
+  - add-ons/brick_1randompack/1x2x2rampcenterup.blb
+  - add-ons/brick_1randompack/1x3rampcenterdiag.blb
+  - add-ons/brick_1randompack/1x5rampcenterdiag.blb
+  - add-ons/brick_1randompack/1x3x3rampcenterdiag.blb
+  - add-ons/brick_1randompack/1x3x5rampcenterdiag.blb
+  - add-ons/brick_1randompack/1x4rampcenterdiag.blb
+  - add-ons/brick_1randompack/1x2x2rampcenterdiag.blb
+  - add-ons/brick_1randompack/2545rampadaptera.blb
+  - add-ons/brick_1randompack/2545rampadapterb.blb
+  - add-ons/brick_1randompack/2545rampadapteraup.blb
+  - add-ons/brick_1randompack/2545rampadapterbup.blb
+  - add-ons/brick_1randompack/2545rampadapterc.blb
+  - add-ons/brick_1randompack/2545rampadaptercup.blb
+  - add-ons/brick_1randompack/2545rampadapterd.blb
+  - add-ons/brick_1randompack/2545rampadapterdup.blb
+  - add-ons/brick_1randompack/3x3fprintplate.blb
+  - add-ons/brick_1randompack/3x3fprintplatec.blb
+  - add-ons/brick_1randompack/2x2fplateprint90.blb
+  - add-ons/brick_1randompack/4x4fround.blb
+  - add-ons/brick_1randompack/6x6fround.blb
+  - add-ons/brick_1randompack/2x2froundprintc.blb
+  - add-ons/brick_1randompack/4x4froundprint.blb
+  - add-ons/brick_1randompack/4x4froundprintc.blb
+  - add-ons/brick_1randompack/2x2froundprint90.blb
+  - add-ons/brick_1randompack/2x2x2undercarriage.blb
+  - add-ons/brick_1randompack/1x2halfround.blb
+  - add-ons/brick_1randompack/1x2fhalfround.blb
+  - add-ons/brick_1randompack/4x2fhalfround.blb
+  - add-ons/brick_1randompack/6x3fhalfround.blb
+  - add-ons/brick_1randompack/1x1fhalfround.blb
+  - add-ons/brick_1randompack/1x1halfround.blb
+  - add-ons/brick_1randompack/1x1halfround90.blb
+  - add-ons/brick_1randompack/2x1halfround90.blb
+  - add-ons/brick_1randompack/4x1halfround90.blb
+  - add-ons/brick_1randompack/1x2halfround90.blb
+  - add-ons/brick_1randompack/2x2halfround90.blb
+  - add-ons/brick_1randompack/4x2halfround90.blb
+  - add-ons/brick_1randompack/25invrampcorner.blb
+  - add-ons/brick_1randompack/25invrampcornerup.blb
+  - add-ons/brick_1randompack/2x2crestlowt.blb
+  - add-ons/brick_1randompack/2x2cresthight.blb
+  - add-ons/brick_1randompack/2x2crestlowplus.blb
+  - add-ons/brick_1randompack/2x2cresthighplus.blb
+  - add-ons/brick_1randompack/1x2xdot666ramp.blb
+  - add-ons/brick_1randompack/1x3xdot666ramp.blb
+  - add-ons/brick_1randompack/1x4xdot666ramp.blb
+  - add-ons/brick_1randompack/2x2crestlowend.blb
+  - add-ons/brick_1randompack/2x2cresthighend.blb
+  - add-ons/brick_1randompack/3x2ramp.blb
+  - add-ons/brick_1randompack/8x2ramp.blb
+  - add-ons/brick_1randompack/12x2ramp.blb
+  - add-ons/brick_1randompack/16x2ramp.blb
+  - add-ons/brick_1randompack/3x3ramp.blb
+  - add-ons/brick_1randompack/8x3ramp.blb
+  - add-ons/brick_1randompack/12x3ramp.blb
+  - add-ons/brick_1randompack/16x3ramp.blb
+  - add-ons/brick_1randompack/3x2rampup.blb
+  - add-ons/brick_1randompack/4x2rampup.blb
+  - add-ons/brick_1randompack/8x2rampup.blb
+  - add-ons/brick_1randompack/12x2rampup.blb
+  - add-ons/brick_1randompack/16x2rampup.blb
+  - add-ons/brick_1randompack/3x3rampup.blb
+  - add-ons/brick_1randompack/4x3rampup.blb
+  - add-ons/brick_1randompack/8x3rampup.blb
+  - add-ons/brick_1randompack/12x3rampup.blb
+  - add-ons/brick_1randompack/16x3rampup.blb
+  - add-ons/bot_hole/4xspawn.blb
+  - add-ons/bot_hole/8xspawn.blb
+  - add-ons/bot_hole/6xspawn.blb
+  - add-ons/bot_hole/4xspawn.blb

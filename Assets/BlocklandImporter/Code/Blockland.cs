@@ -18,7 +18,8 @@ namespace Blockland
         public static Data brickUINameTable;
         static Blockland()
         {
-            LoadSettings();
+            settings = LoadAsset<Settings>("Settings", "t: Blockland.Settings");
+            brickUINameTable = LoadAsset<Data>("BrickUINameTable", "t: Blockland.Data");
             resources = new();
         }
         public static Vector3 BlocklandUnitsToStuds(Vector3 pos)
@@ -34,38 +35,46 @@ namespace Blockland
             studs.y *= plateStudRatio;
             return studs;
         }
-        static Settings LoadSettings()
+        public static T LoadAsset<T>(string name, string typeFilter) where T : UnityEngine.ScriptableObject
         {
-            settings = UnityEngine.Resources.Load<Settings>("Settings");
+            T instance = UnityEngine.Resources.Load<T>(name);
 
 #if UNITY_EDITOR    // load from asset database first
-            if (settings == null)
+            if (instance == null)
             {
-                string[] guids = UnityEditor.AssetDatabase.FindAssets("t: Blockland.Settings");
+                string[] guids = UnityEditor.AssetDatabase.FindAssets(typeFilter);
                 foreach (string stringGuid in guids)
                 {
                     string path = UnityEditor.AssetDatabase.GUIDToAssetPath(stringGuid);
-                    settings = UnityEditor.AssetDatabase.LoadAssetAtPath<Settings>(path);
-                    if (settings != null)
+                    instance = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(path);
+                    if (instance != null)
                         break;
                 }
             }
 #endif
-            if (settings == null)
+            if (instance == null)
             {
                 // create new one
-                settings = ScriptableObject.CreateInstance<Settings>();
-                brickUINameTable = ScriptableObject.CreateInstance<Data>();
-                brickUINameTable.name = "BrickUINameTable";
+                instance = ScriptableObject.CreateInstance<T>();
+                instance.name = name;
 #if UNITY_EDITOR
-                string path = "Assets/BlocklandImporter/Resources/Settings.asset";
-                UnityEditor.AssetDatabase.CreateAsset(settings, path);
-                Debug.Log($"Created Blockland Settings asset at {path}", settings);
-                UnityEditor.AssetDatabase.AddObjectToAsset(brickUINameTable, settings);
+                string path = $"Assets/BlocklandImporter/Resources/{name}.asset";
+                UnityEditor.AssetDatabase.CreateAsset(instance, path);
+                Debug.Log($"Created {typeof(T)}, {name} at {path}", instance);
 #endif
             }
 
-            return settings;
+            return instance;
         }
+#if UNITY_EDITOR
+        [UnityEditor.MenuItem("Blockland/Load Assets")]
+        public static void LoadAssets()
+        {
+            Blockland.settings = Blockland.LoadAsset<Settings>("Settings", "t: Blockland.Settings");
+            Blockland.brickUINameTable = Blockland.LoadAsset<Data>("BrickUINameTable", "t: Blockland.Data");
+
+            brickUINameTable.RefreshMap();
+        }
+#endif
     }
 }

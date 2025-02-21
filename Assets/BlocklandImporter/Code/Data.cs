@@ -18,16 +18,41 @@ namespace Blockland
         List<string> keys = new();
         [SerializeField] 
         List<string> values = new();
+        [SerializeField]
         Dictionary<string, int> keyMap = new();
-        public Data()
+        private void OnEnable()
         {
-            for (int i = 0; i < keys.Count; i++)
+            RefreshMap();
+#if UNITY_EDITOR
+            UnityEditor.AssemblyReloadEvents.afterAssemblyReload += AssemblyReloadEvents_afterAssemblyReload;
+#endif
+        }
+        private void OnDisable()
+        {
+#if UNITY_EDITOR
+            UnityEditor.AssemblyReloadEvents.afterAssemblyReload -= AssemblyReloadEvents_afterAssemblyReload;
+#endif
+        }
+
+        private void AssemblyReloadEvents_afterAssemblyReload()
+        {
+            RefreshMap();
+        }
+
+        public bool TryGetValue(string key, out string value)
+        {
+            if (keyMap.TryGetValue(key, out int index))
             {
-                keyMap[keys[i]] = i;
+                value = values[index];
+                return true;
             }
+
+            value = string.Empty;
+            return false;
         }
         public void InsertData(StreamReader reader)
         {
+            RefreshMap();
             while (!reader.EndOfStream)
             {
                 string line = reader.ReadLine().ToLower();
@@ -40,8 +65,8 @@ namespace Blockland
                 int valueStart = separatorIndex + 1;
                 int valueLength = line.Length - valueStart;
 
-                string key = line.Substring(keyStart, keyLength);
-                string value = line.Substring(valueStart, valueLength);
+                string value = line.Substring(keyStart, keyLength);
+                string key = line.Substring(valueStart, valueLength);
 
                 if (keyMap.TryGetValue(key, out int keyIndex))
                 {
@@ -60,6 +85,18 @@ namespace Blockland
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(this);
 #endif
+        }
+        public void RefreshMap()
+        {
+            if (keyMap == null)
+                keyMap = new Dictionary<string, int>();
+
+            keyMap.Clear();
+
+            for (int i = 0; i < keys.Count; i++)
+            {
+                keyMap[keys[i]] = i;
+            }
         }
     }
 }

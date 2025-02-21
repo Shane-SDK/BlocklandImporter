@@ -42,5 +42,12 @@ namespace Blockland.Resources
             UnityEngine.Profiling.Profiler.EndSample();
             return false;
         }
+        public bool LoadBrickData(ResourcePath path, out Objects.BrickData resource)
+        {
+#if UNITY_EDITOR
+            resource = UnityEditor.AssetDatabase.LoadAssetAtPath<Objects.BrickData>(path.AssetDatabasePath);
+            return resource != null;
+#endif
+        }
     }
 }

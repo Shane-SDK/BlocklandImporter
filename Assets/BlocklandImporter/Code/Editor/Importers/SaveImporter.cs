@@ -57,7 +57,7 @@ namespace Blockland.Editor
             {
                 SaveData.BrickInstance instance = save.bricks[i];
 
-                if (instance.brickResource.Type == Resources.ResourceType.Brick)
+                if (instance.data.type == BrickType.Brick)
                 {
                     instance.GetTransformedBounds(out Bounds bounds);
                     instance.GetTransformedBounds(out BoundsInt intBounds);
@@ -65,10 +65,10 @@ namespace Blockland.Editor
                     void AddFace(int side, float uScale, float vScale, SideMaterial sideMat)
                     {
                         // Convert size from studs to unity units
-                        Vector3 size = Blockland.StudsToUnity(instance.brickResource.colliderSize);
+                        Vector3 size = Blockland.StudsToUnity(instance.data.size);
                         Quaternion rotation = Quaternion.AngleAxis(instance.Angle, Vector3.up);
 
-                        Vector3 origin = Blockland.StudsToUnity(instance.brickResource.colliderSize / 2.0f);
+                        Vector3 origin = Blockland.StudsToUnity((Vector3)instance.data.size / 2.0f);
                         Vector3 position = Blockland.StudsToUnity(instance.position) - size / 2.0f;
 
                         Vector3 TransformVector(Vector3 local, Vector3 origin, Quaternion rotation)
@@ -185,10 +185,10 @@ namespace Blockland.Editor
                         AddFace(3, 1, 1, SideMaterial.Side);     // Right
 
                     if (!IsOccluded(Vector3.up))
-                        AddFace(4, instance.brickResource.colliderSize.z, instance.brickResource.colliderSize.x, SideMaterial.Top);     // Top
+                        AddFace(4, instance.data.size.z, instance.data.size.x, SideMaterial.Top);     // Top
 
                     if (!IsOccluded(-Vector3.up))
-                        AddFace(5, instance.brickResource.colliderSize.x, instance.brickResource.colliderSize.z, SideMaterial.Top);     // Bottom
+                        AddFace(5, instance.data.size.x, instance.data.size.z, SideMaterial.Top);     // Bottom
                 }
             }
 

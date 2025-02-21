@@ -20,9 +20,11 @@ namespace Blockland
             base.OnInspectorGUI();
             if (meshPreview != null )
             {
+                GUI.enabled = true;
                 Rect rect = GUILayoutUtility.GetAspectRect(1.0f);
                 meshPreview.OnPreviewGUI(rect, GUIStyle.none);
                 meshPreview.OnPreviewSettings();
+                GUI.enabled = false;
             }
             
         }

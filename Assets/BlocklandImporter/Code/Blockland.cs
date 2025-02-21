@@ -15,6 +15,7 @@ namespace Blockland
         public const float metricToPlateFactor = 5.0f;   // 0.2 => 1 plate apart
         public static Resources.Resources resources;
         public static Settings settings;
+        public static Data brickUINameTable;
         static Blockland()
         {
             LoadSettings();
@@ -54,10 +55,13 @@ namespace Blockland
             {
                 // create new one
                 settings = ScriptableObject.CreateInstance<Settings>();
+                brickUINameTable = ScriptableObject.CreateInstance<Data>();
+                brickUINameTable.name = "BrickUINameTable";
 #if UNITY_EDITOR
                 string path = "Assets/BlocklandImporter/Resources/Settings.asset";
                 UnityEditor.AssetDatabase.CreateAsset(settings, path);
                 Debug.Log($"Created Blockland Settings asset at {path}", settings);
+                UnityEditor.AssetDatabase.AddObjectToAsset(brickUINameTable, settings);
 #endif
             }
 

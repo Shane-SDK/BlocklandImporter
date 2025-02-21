@@ -13,6 +13,7 @@ namespace Blockland.Objects
         {
             Mesh mesh = new Mesh();
             List<Vector3> vertices = new();
+            List<Color> colors = new();
             List<int> indices = new();
 
             foreach (FaceSet set in faceSets)
@@ -29,15 +30,21 @@ namespace Blockland.Objects
                     indices.Add(offset + 2);
                     indices.Add(offset + 3);
 
-                    vertices.Add(face.a.position);
-                    vertices.Add(face.b.position);
-                    vertices.Add(face.c.position);
-                    vertices.Add(face.d.position);
+                    for (int i = 0; i < 4; i++)
+                    {
+                        vertices.Add(face[i].position);
+                        colors.Add(face[i].color);
+                    }
                 }
             }
 
             mesh.SetVertices(vertices);
             mesh.SetTriangles(indices, 0);
+            mesh.SetColors(colors);
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
+            mesh.UploadMeshData(true);
 
             return mesh;
         }
@@ -156,6 +163,10 @@ namespace Blockland.Objects
                         reader.ReadNextNonEmptyLine();
                         colorBuffer[v] = new Color(reader.ParseLineFloat(0), reader.ParseLineFloat(1), reader.ParseLineFloat(2), reader.ParseLineFloat(3));
                     }
+                }
+                else
+                {
+                    System.Array.Fill(colorBuffer, Color.white);
                 }
 
                 for (int v = 0; v < 4; v++)

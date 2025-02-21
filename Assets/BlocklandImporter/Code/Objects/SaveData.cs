@@ -37,7 +37,7 @@ namespace Blockland.Objects
                 char peek = (char)reader.Peek();
                 if (peek == '+' || char.IsWhiteSpace(peek))
                 {
-                    reader.ReadLine();
+                    reader.SkipLine();
                     continue;
                 }
 
@@ -49,7 +49,7 @@ namespace Blockland.Objects
 
             void ParseBlockLine(string line)
             {
-                if (!reader.TryParseLineElement(0, out string brickDesignator) || !brickDesignator.Contains('"')) return;
+                if (!line.Contains('"')) return;
 
                 int quoteIndex = line.IndexOf('"');
                 string brickUIName = line.Substring(0, quoteIndex).ToLower();
@@ -59,13 +59,16 @@ namespace Blockland.Objects
                     return;
                 }
 
+                string brickProperties = line.Substring(quoteIndex + 1, line.Length - (quoteIndex + 1));
+                reader.SetStringRuns(brickProperties);
+
                 // Load resource
                 if (Blockland.resources.LoadBrickData(new Resources.ResourcePath(dataPath), out Objects.BrickData brickResource))
                 {
-                    Vector3 position = Blockland.BlocklandUnitsToStuds(new Vector3(reader.ParseLineFloat(1), reader.ParseLineFloat(3), reader.ParseLineFloat(2)));
-                    int colorIndex = reader.ParseLineInt(6);
+                    Vector3 position = Blockland.BlocklandUnitsToStuds(new Vector3(reader.ParseLineFloat(0), reader.ParseLineFloat(2), reader.ParseLineFloat(1)));
+                    int colorIndex = reader.ParseLineInt(5);
 
-                    byte angle = (byte)Mathf.RoundToInt(reader.ParseLineFloat(4));
+                    byte angle = (byte)Mathf.RoundToInt(reader.ParseLineFloat(3));
 
                     saveData.bricks.Add(new BrickInstance { data = brickResource, position = position, angle = angle, color = saveData.colorMap[colorIndex] });
                 }
@@ -78,28 +81,28 @@ namespace Blockland.Objects
 
             return saveData;
         }
-        public struct BrickInstance
+    }
+    public struct BrickInstance
+    {
+        public float Angle => angle * 90.0f;
+        public Objects.BrickData data;
+        public Vector3 position;
+        public byte angle;
+        public Color color;
+
+        public void GetTransformedBounds(out Bounds bounds)
         {
-            public float Angle => angle * 90.0f;
-            public Objects.BrickData data;
-            public Vector3 position;
-            public byte angle;
-            public Color color;
+            Vector3 size = Quaternion.AngleAxis(Angle, Vector3.up) * data.size;
+            for (int i = 0; i < 3; i++)
+                size[i] = Mathf.Abs(size[i]);
 
-            public void GetTransformedBounds(out Bounds bounds)
-            {
-                Vector3 size = Quaternion.AngleAxis(Angle, Vector3.up) * data.size;
-                for (int i = 0; i < 3; i++)
-                    size[i] = Mathf.Abs(size[i]);
+            bounds = new Bounds(position, size);
+        }
+        public void GetTransformedBounds(out BoundsInt intBounds)
+        {
+            GetTransformedBounds(out Bounds bounds);
 
-                bounds = new Bounds(position, size);
-            }
-            public void GetTransformedBounds(out BoundsInt intBounds)
-            {
-                GetTransformedBounds(out Bounds bounds);
-
-                intBounds = new BoundsInt(Vector3Int.FloorToInt(bounds.center - bounds.size / 2.0f), Vector3Int.RoundToInt(bounds.size));
-            }
+            intBounds = new BoundsInt(Vector3Int.FloorToInt(bounds.center - bounds.size / 2.0f), Vector3Int.RoundToInt(bounds.size));
         }
     }
 }

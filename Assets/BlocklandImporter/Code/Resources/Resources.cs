@@ -48,6 +48,9 @@ namespace Blockland.Resources
             resource = UnityEditor.AssetDatabase.LoadAssetAtPath<Objects.BrickData>(path.AssetDatabasePath);
             return resource != null;
 #endif
+
+            resource = null;
+            return false;
         }
     }
 }

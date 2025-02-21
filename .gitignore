@@ -10,6 +10,8 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 
+/Assets/BlocklandImporter/Assets/
+
 /backups/
 
 # MemoryCaptures can get excessive in size.
@@ -62,6 +64,7 @@ sysinfo.txt
 *.aab
 *.unitypackage
 *.app
+*.unity
 
 # Crashlytics generated file
 crashlytics-build.properties

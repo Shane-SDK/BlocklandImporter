@@ -1,3 +1,4 @@
+using Blockland.Meshing;
 using Blockland.Objects;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace Blockland
         private void OnEnable()
         {
             BrickData brick = target as BrickData;
-            meshPreview = new(brick.CreateMesh());
+            MeshBuilder meshBuilder = new MeshBuilder();
+            meshBuilder.AddBrick(new BrickInstance { angle = 0, color = Color.red, data =  brick, position = Vector3.zero });
+            meshPreview = new(meshBuilder.CreateMesh());
         }
         public override void OnInspectorGUI()
         {

@@ -9,45 +9,6 @@ namespace Blockland.Objects
         public Vector3Int size;
         public BrickType type;
         public FaceSet[] faceSets;
-        public Mesh CreateMesh()
-        {
-            Mesh mesh = new Mesh();
-            List<Vector3> vertices = new();
-            List<Color> colors = new();
-            List<int> indices = new();
-
-            foreach (FaceSet set in faceSets)
-            {
-                if (set.faces == null) continue;
-
-                foreach (Face face in set.faces)
-                {
-                    int offset = vertices.Count;
-                    indices.Add(offset + 0);
-                    indices.Add(offset + 1);
-                    indices.Add(offset + 3);
-                    indices.Add(offset + 1);
-                    indices.Add(offset + 2);
-                    indices.Add(offset + 3);
-
-                    for (int i = 0; i < 4; i++)
-                    {
-                        vertices.Add(face[i].position);
-                        colors.Add(face[i].color);
-                    }
-                }
-            }
-
-            mesh.SetVertices(vertices);
-            mesh.SetTriangles(indices, 0);
-            mesh.SetColors(colors);
-            mesh.RecalculateBounds();
-            mesh.RecalculateNormals();
-            mesh.RecalculateTangents();
-            mesh.UploadMeshData(true);
-
-            return mesh;
-        }
         public static BrickData CreateFromReader(Reader reader)
         {    
             BrickData data = ScriptableObject.CreateInstance<BrickData>();
@@ -140,8 +101,6 @@ namespace Blockland.Objects
                 {
                     reader.ReadNextNonEmptyLine();
                     Vector3 position = new Vector3(reader.ParseLineFloat(0), reader.ParseLineFloat(2), reader.ParseLineFloat(1));
-                    position = Blockland.StudsToUnity(Blockland.BlocklandUnitsToStuds(position));
-                    position.y *= Blockland.plateStudRatio;
                     positionBuffer[v] = position;
                 }
 

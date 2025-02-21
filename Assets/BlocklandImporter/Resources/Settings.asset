@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Settings
   m_EditorClassIdentifier: 
   gamePath: D:/SteamLibrary/steamapps/common/Blockland
-  studToUnityScaleFactor: 0.41666666
+  studToUnityScaleFactor: 1

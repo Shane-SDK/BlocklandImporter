@@ -5,13 +5,13 @@ using System.IO;
 using UnityEngine.Rendering;
 using Blockland.Objects;
 using Blockland.Meshing;
+using System.Collections;
 
 namespace Blockland.Editor
 {
     [ScriptedImporter(0, "bls")]
     public class SaveImporter : ScriptedImporter
     {
-        
         public override void OnImportAsset(AssetImportContext ctx)
         {
             using FileStream file = System.IO.File.OpenRead(ctx.assetPath);
@@ -39,10 +39,20 @@ namespace Blockland.Editor
             for (int i = 0; i < materials.Length; i++)
             {
                 TextureFace face = meshBuilder.textureFaces[i];
-                if (face == TextureFace.Top || face == TextureFace.BottomEdge)
-                    materials[i] = UnityEngine.Resources.Load<Material>("Bricks/BrickTop");
-                else
-                    materials[i] = UnityEngine.Resources.Load<Material>("Bricks/BrickSide");
+                switch (face)
+                {
+                    case TextureFace.Top:
+                        materials[i] = UnityEngine.Resources.Load<Material>("Bricks/BrickTop");
+                        break;
+                    case TextureFace.Side:
+                    default:
+                        materials[i] = UnityEngine.Resources.Load<Material>("Bricks/BrickSide");
+                        break;
+                    case TextureFace.Print:
+                    case TextureFace.Ramp:
+                        materials[i] = UnityEngine.Resources.Load<Material>("Bricks/Print");
+                        break;
+                }
             }
 
             root.AddComponent<MeshRenderer>().sharedMaterials = materials;

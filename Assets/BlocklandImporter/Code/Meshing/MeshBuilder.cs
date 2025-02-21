@@ -1,5 +1,5 @@
 using Blockland.Objects;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -38,7 +38,7 @@ namespace Blockland.Meshing
         }
         public Mesh CreateMesh()
         {
-            HashSet<Vector3Int> occludingCoords = new HashSet<Vector3Int>();
+            Dictionary<Vector3Int, int> partLookup = new Dictionary<Vector3Int, int>();
             for (int i = 0; i < bricks.Count; i++)
             {
                 BrickInstance instance = bricks[i];
@@ -46,11 +46,29 @@ namespace Blockland.Meshing
 
                 foreach (Vector3Int pos in bounds.allPositionsWithin)
                 {
-                    if (!occludingCoords.Contains(pos))
+                    if (!partLookup.ContainsKey(pos))
                     {
-                        occludingCoords.Add(pos);
+                        partLookup.Add(pos, i);
                     }
                 }
+            }
+
+            bool IsOccluding(Vector3Int occluderPoint, Vector3 occluderDirectionVector, Direction occluderDirection)
+            {
+                // get reference to occluder brick using lookup
+                // transform??
+
+                if (!partLookup.TryGetValue(occluderPoint, out int brickIndex))
+                    return false;
+
+                BrickInstance instance = bricks[brickIndex];
+
+                if (instance.data.type == BrickType.Brick)  // bricks occlude from any point/direction
+                    return true;
+
+                return false;
+                // get occluder point in local space
+                //Vector3 local = instance.InverseTransformPoint(occluderPoint);
             }
 
             // todo - share coplanar verts
@@ -59,11 +77,33 @@ namespace Blockland.Meshing
             {
                 BrickInstance instance = bricks[i];
 
+                instance.GetTransformedBounds(out Bounds bounds);
+                instance.GetTransformedBounds(out BoundsInt intBounds);
+
+                bool IsFaceOccluded(Vector3 direction)
+                {
+                    direction = Quaternion.AngleAxis(instance.Angle, Vector3.up) * direction;
+
+                    BoundsInt overlapBounds = intBounds;
+                    overlapBounds.position += Vector3Int.RoundToInt(direction);
+
+                    foreach (Vector3Int c in overlapBounds.allPositionsWithin)
+                    {
+                        Vector3Int pos = c;
+
+                        if (intBounds.Contains(pos)) continue;
+                        if (!IsOccluding(c, -direction, Direction.Backward))
+                        {
+                            return false;
+                        }
+
+                    }
+
+                    return true;
+                }
+
                 if (instance.data.type == BrickType.Brick)
                 {
-                    instance.GetTransformedBounds(out Bounds bounds);
-                    instance.GetTransformedBounds(out BoundsInt intBounds);
-
                     void AddFace(int side, float uScale, float vScale, TextureFace sideMat)
                     {
                         // Convert size from studs to unity units
@@ -152,52 +192,30 @@ namespace Blockland.Meshing
                         vertices.Add(d);
                     }
 
-                    bool IsOccluded(Vector3 direction)
-                    {
-                        bool occlude = true;
-                        direction = Quaternion.AngleAxis(instance.Angle, Vector3.up) * direction;
-
-                        BoundsInt overlapBounds = intBounds;
-                        overlapBounds.position += Vector3Int.RoundToInt(direction);
-
-                        foreach (Vector3Int c in overlapBounds.allPositionsWithin)
-                        {
-                            Vector3Int pos = c;
-
-                            if (intBounds.Contains(pos)) continue;
-                            if (!occludingCoords.Contains(pos))
-                            {
-                                occlude = false;
-                            }
-                        }
-
-                        return occlude;
-                    }
-
-                    if (!IsOccluded(-Vector3.forward))
+                    if (!IsFaceOccluded(-Vector3.forward))
                         AddFace(0, 1, 1, TextureFace.Side);     // Front
 
-                    if (!IsOccluded(Vector3.forward))
+                    if (!IsFaceOccluded(Vector3.forward))
                         AddFace(1, 1, 1, TextureFace.Side);     // Back
 
-                    if (!IsOccluded(-Vector3.right))
+                    if (!IsFaceOccluded(-Vector3.right))
                         AddFace(2, 1, 1, TextureFace.Side);     // Left
 
-                    if (!IsOccluded(Vector3.right))
+                    if (!IsFaceOccluded(Vector3.right))
                         AddFace(3, 1, 1, TextureFace.Side);     // Right
 
-                    if (!IsOccluded(Vector3.up))
+                    if (!IsFaceOccluded(Vector3.up))
                         AddFace(4, instance.data.size.z, instance.data.size.x, TextureFace.Top);     // Top
 
-                    if (!IsOccluded(-Vector3.up))
+                    if (!IsFaceOccluded(-Vector3.up))
                         AddFace(5, instance.data.size.x, instance.data.size.z, TextureFace.BottomEdge);     // Bottom
                 }
                 else  // Special
                 {
                     BrickData data = instance.data;
-                    foreach (FaceSet set in data.faceSets)
+                    void InsertFaces(FaceSet faceSet)
                     {
-                        foreach (Face face in set.faces)
+                        foreach (Face face in faceSet.faces)
                         {
                             // get indices that correspond to texture
                             List<uint> textureIndices = GetIndices(face.texture);
@@ -227,6 +245,26 @@ namespace Blockland.Meshing
                             }
                         }
                     }
+
+                    if (!IsFaceOccluded(Vector3.forward))  // North / Front
+                        InsertFaces(data.faceSets[2]);
+
+                    if (!IsFaceOccluded(-Vector3.forward))   // South / Back
+                        InsertFaces(data.faceSets[4]);
+
+                    if (!IsFaceOccluded(Vector3.right))    // East / Right
+                        InsertFaces(data.faceSets[3]);
+
+                    if (!IsFaceOccluded(-Vector3.right))     // West / Left
+                        InsertFaces(data.faceSets[5]);
+
+                    if (!IsFaceOccluded(Vector3.up))    // Top
+                        InsertFaces(data.faceSets[0]);
+
+                    if (!IsFaceOccluded(-Vector3.up))   // Bottom
+                        InsertFaces(data.faceSets[1]);
+
+                    InsertFaces(data.faceSets[6]);  // Omni
                 }
             }
 

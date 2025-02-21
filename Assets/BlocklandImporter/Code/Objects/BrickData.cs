@@ -93,7 +93,7 @@ namespace Blockland.Objects
                 if (colonIndex == -1)
                     return;
 
-                face.texture = ParseTextureFace(textureLine.Substring(colonIndex, textureLine.Length - colonIndex));
+                face.texture = ParseTextureFace(textureLine.Substring(colonIndex + 1, textureLine.Length - colonIndex - 1));
                 
                 // read positions
                 reader.ReadNextNonEmptyLine();  // position header
@@ -143,12 +143,16 @@ namespace Blockland.Objects
             {
                 case "bottomedge":
                     return TextureFace.BottomEdge;
+                case "bottomloop":
+                    return TextureFace.BottomLoop;
                 case "side":
                     return TextureFace.Side;
                 case "ramp":
                     return TextureFace.Ramp;
                 case "top":
                     return TextureFace.Top;
+                case "print":
+                    return TextureFace.Print;
             }
 
             return TextureFace.Side;
@@ -165,7 +169,9 @@ namespace Blockland.Objects
         BottomEdge,
         Ramp,
         Side,
-        Top
+        Top,
+        BottomLoop,
+        Print
     }
     [System.Serializable]
     public class FaceSet

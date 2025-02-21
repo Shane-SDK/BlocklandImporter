@@ -34,6 +34,17 @@ namespace Blockland
             studs.y *= plateStudRatio;
             return studs;
         }
+        public static Direction GetOppositeDirection(Direction dir)
+        {
+            if (dir == Direction.Left) return Direction.Right;
+            if (dir == Direction.Right) return Direction.Left;
+            if (dir == Direction.Up) return Direction.Down;
+            if (dir == Direction.Down) return Direction.Up;
+            if (dir == Direction.Forward) return Direction.Backward;
+            if (dir == Direction.Backward) return Direction.Forward;
+
+            return Direction.Forward;
+        }
         public static T LoadAsset<T>(string name, string typeFilter) where T : UnityEngine.ScriptableObject
         {
             T instance = UnityEngine.Resources.Load<T>(name);
@@ -75,5 +86,14 @@ namespace Blockland
             brickUINameTable.RefreshMap();
         }
 #endif
+    }
+    public enum Direction
+    {
+        Forward,
+        Backward,
+        Up,
+        Down,
+        Left,
+        Right
     }
 }

@@ -104,5 +104,16 @@ namespace Blockland.Objects
 
             intBounds = new BoundsInt(Vector3Int.FloorToInt(bounds.center - bounds.size / 2.0f), Vector3Int.RoundToInt(bounds.size));
         }
+        /// <summary>
+        /// World to local in STUDS
+        /// </summary>
+        /// <param name="studWorld"></param>
+        /// <returns></returns>
+        public Vector3 InverseTransformPoint(Vector3 studWorld)
+        {
+            Vector3 local = studWorld - position;
+            local = Quaternion.AngleAxis(-Angle, Vector3.up) * local;
+            return local;
+        }
     }
 }

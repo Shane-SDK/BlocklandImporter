@@ -18,211 +18,209 @@ namespace Blockland.Editor
         };
         public override void OnImportAsset(AssetImportContext ctx)
         {
-            using (FileStream file = System.IO.File.OpenRead(ctx.assetPath))
+            using FileStream file = System.IO.File.OpenRead(ctx.assetPath);
+            Reader reader = new Reader(file);
+            UnityEngine.Profiling.Profiler.BeginSample("Read Save");
+            SaveData save = SaveData.CreateFromReader(reader);
+            save.name = System.IO.Path.GetFileNameWithoutExtension(ctx.assetPath);
+            UnityEngine.Profiling.Profiler.EndSample();
+
+            UnityEngine.Profiling.Profiler.BeginSample("Asset Creation");
+            GameObject root = new();
+            ctx.AddObjectToAsset("root", root);
+            ctx.SetMainObject(root);
+
+            List<Vertex> vertices = new List<Vertex>();
+            Dictionary<SideMaterial, List<int>> sideIndices = new();
+
+            sideIndices[SideMaterial.Top] = new();
+            sideIndices[SideMaterial.Side] = new();
+
+            HashSet<Vector3Int> occludingCoords = new HashSet<Vector3Int>();
+            for (int i = 0; i < save.bricks.Count; i++)
             {
-                Reader reader = new Reader(file);
-                UnityEngine.Profiling.Profiler.BeginSample("Read Save");
-                SaveData save = SaveData.CreateFromReader(reader);
-                save.name = System.IO.Path.GetFileNameWithoutExtension(ctx.assetPath);
-                UnityEngine.Profiling.Profiler.EndSample();
+                SaveData.BrickInstance instance = save.bricks[i];
+                instance.GetTransformedBounds(out BoundsInt bounds);
 
-                UnityEngine.Profiling.Profiler.BeginSample("Asset Creation");
-                GameObject root = new();
-                ctx.AddObjectToAsset("root", root);
-                ctx.SetMainObject(root);
-
-                List<Vertex> vertices = new List<Vertex>();
-                Dictionary<SideMaterial, List<int>> sideIndices = new();
-
-                sideIndices[SideMaterial.Top] = new();
-                sideIndices[SideMaterial.Side] = new();
-
-                HashSet<Vector3Int> occludingCoords = new HashSet<Vector3Int>();
-                for (int i = 0; i < save.bricks.Count; i++)
+                foreach (Vector3Int pos in bounds.allPositionsWithin)
                 {
-                    SaveData.BrickInstance instance = save.bricks[i];
-                    instance.GetTransformedBounds(out BoundsInt bounds);
-
-                    foreach (Vector3Int pos in bounds.allPositionsWithin)
+                    if (!occludingCoords.Contains(pos))
                     {
-                        if (!occludingCoords.Contains(pos))
-                        {
-                            occludingCoords.Add(pos);
-                        }
+                        occludingCoords.Add(pos);
                     }
                 }
+            }
 
-                // todo - share coplanar verts
+            // todo - share coplanar verts
 
-                for (int i = 0; i < save.bricks.Count; i++)
+            for (int i = 0; i < save.bricks.Count; i++)
+            {
+                SaveData.BrickInstance instance = save.bricks[i];
+
+                if (instance.brickResource.Type == Resources.ResourceType.Brick)
                 {
-                    SaveData.BrickInstance instance = save.bricks[i];
+                    instance.GetTransformedBounds(out Bounds bounds);
+                    instance.GetTransformedBounds(out BoundsInt intBounds);
 
-                    if (instance.brickResource.Type == Resources.ResourceType.Brick)
+                    void AddFace(int side, float uScale, float vScale, SideMaterial sideMat)
                     {
-                        instance.GetTransformedBounds(out Bounds bounds);
-                        instance.GetTransformedBounds(out BoundsInt intBounds);
+                        // Convert size from studs to unity units
+                        Vector3 size = Blockland.StudsToUnity(instance.brickResource.colliderSize);
+                        Quaternion rotation = Quaternion.AngleAxis(instance.Angle, Vector3.up);
 
-                        void AddFace(int side, float uScale, float vScale, SideMaterial sideMat)
+                        Vector3 origin = Blockland.StudsToUnity(instance.brickResource.colliderSize / 2.0f);
+                        Vector3 position = Blockland.StudsToUnity(instance.position) - size / 2.0f;
+
+                        Vector3 TransformVector(Vector3 local, Vector3 origin, Quaternion rotation)
                         {
-                            // Convert size from studs to unity units
-                            Vector3 size = Blockland.StudsToUnity(instance.brickResource.colliderSize);
-                            Quaternion rotation = Quaternion.AngleAxis(instance.Angle, Vector3.up);
+                            Vector3 offset = local - origin;
+                            offset = rotation * offset;
 
-                            Vector3 origin = Blockland.StudsToUnity(instance.brickResource.colliderSize / 2.0f);
-                            Vector3 position = Blockland.StudsToUnity(instance.position) - size / 2.0f;
-
-                            Vector3 TransformVector(Vector3 local, Vector3 origin, Quaternion rotation)
-                            {
-                                Vector3 offset = local - origin;
-                                offset = rotation * offset;
-
-                                return origin + offset;
-                            }
-
-                            Color color = instance.color;
-
-                            Vertex a = default, b = default, c = default, d = default;
-
-                            a.color = color;
-                            b.color = color;
-                            c.color = color;
-                            d.color = color;
-
-                            int offset = vertices.Count;
-
-                            List<int> indices = sideIndices[sideMat];
-
-                            indices.Add(offset + 0);
-                            indices.Add(offset + 1);
-                            indices.Add(offset + 3);
-                            indices.Add(offset + 0);
-                            indices.Add(offset + 3);
-                            indices.Add(offset + 2);
-
-                            switch (side)
-                            {
-                                case 0:     // Front
-                                    a.position = position + TransformVector(new Vector3(0, 0, 0), origin, rotation);                   // 0
-                                    b.position = position + TransformVector(new Vector3(0, size.y, 0), origin, rotation);              // 2
-                                    c.position = position + TransformVector(new Vector3(size.x, 0, 0), origin, rotation);              // 1
-                                    d.position = position + TransformVector(new Vector3(size.x, size.y, 0), origin, rotation);         // 3
-                                    break;
-                                case 1:     // Back
-                                    a.position = position + TransformVector(new Vector3(0, 0, size.z), origin, rotation);              // 4
-                                    b.position = position + TransformVector(new Vector3(size.x, 0, size.z), origin, rotation);         // 5
-                                    c.position = position + TransformVector(new Vector3(0, size.y, size.z), origin, rotation);         // 6
-                                    d.position = position + TransformVector(new Vector3(size.x, size.y, size.z), origin, rotation);    // 7
-                                    break;
-                                case 2:     // Left
-                                    a.position = position + TransformVector(new Vector3(0, 0, 0), origin, rotation);                   // 0
-                                    b.position = position + TransformVector(new Vector3(0, 0, size.z), origin, rotation);              // 4
-                                    c.position = position + TransformVector(new Vector3(0, size.y, 0), origin, rotation);              // 2
-                                    d.position = position + TransformVector(new Vector3(0, size.y, size.z), origin, rotation);         // 6
-                                    break;
-                                case 3:     // Right
-                                    a.position = position + TransformVector(new Vector3(size.x, 0, 0), origin, rotation);              // 1
-                                    b.position = position + TransformVector(new Vector3(size.x, size.y, 0), origin, rotation);         // 3
-                                    c.position = position + TransformVector(new Vector3(size.x, 0, size.z), origin, rotation);         // 5
-                                    d.position = position + TransformVector(new Vector3(size.x, size.y, size.z), origin, rotation);    // 7
-                                    break;
-                                case 4:     // Top
-                                    a.position = position + TransformVector(new Vector3(0, size.y, 0), origin, rotation);              // 2
-                                    b.position = position + TransformVector(new Vector3(0, size.y, size.z), origin, rotation);         // 6
-                                    c.position = position + TransformVector(new Vector3(size.x, size.y, 0), origin, rotation);         // 3
-                                    d.position = position + TransformVector(new Vector3(size.x, size.y, size.z), origin, rotation);    // 7
-                                    break;
-                                case 5:     // Bottom
-                                    a.position = position + TransformVector(new Vector3(0, 0, 0), origin, rotation);                   // 0
-                                    b.position = position + TransformVector(new Vector3(size.x, 0, 0), origin, rotation);              // 1
-                                    c.position = position + TransformVector(new Vector3(0, 0, size.z), origin, rotation);              // 4
-                                    d.position = position + TransformVector(new Vector3(size.x, 0, size.z), origin, rotation);         // 5
-                                    break;
-                            }
-
-                            a.uv = new Vector2(0 * uScale, 0 * vScale);
-                            b.uv = new Vector2(1 * uScale, 0 * vScale);
-                            c.uv = new Vector2(0 * uScale, 1 * vScale);
-                            d.uv = new Vector2(1 * uScale, 1 * vScale);
-
-                            vertices.Add(a);
-                            vertices.Add(b);
-                            vertices.Add(c);
-                            vertices.Add(d);
+                            return origin + offset;
                         }
 
-                        bool IsOccluded(Vector3 direction)
+                        Color color = instance.color;
+
+                        Vertex a = default, b = default, c = default, d = default;
+
+                        a.color = color;
+                        b.color = color;
+                        c.color = color;
+                        d.color = color;
+
+                        int offset = vertices.Count;
+
+                        List<int> indices = sideIndices[sideMat];
+
+                        indices.Add(offset + 0);
+                        indices.Add(offset + 1);
+                        indices.Add(offset + 3);
+                        indices.Add(offset + 0);
+                        indices.Add(offset + 3);
+                        indices.Add(offset + 2);
+
+                        switch (side)
                         {
-                            bool occlude = true;
-                            direction = Quaternion.AngleAxis(instance.Angle, Vector3.up) * direction;
-
-                            BoundsInt overlapBounds = intBounds;
-                            overlapBounds.position += Vector3Int.RoundToInt(direction);
-
-                            foreach (Vector3Int c in overlapBounds.allPositionsWithin)
-                            {
-                                Vector3Int pos = c;
-
-                                if (intBounds.Contains(pos)) continue;
-                                if (!occludingCoords.Contains(pos))
-                                {
-                                    occlude = false;
-                                }
-                            }
-
-                            return occlude;
+                            case 0:     // Front
+                                a.position = position + TransformVector(new Vector3(0, 0, 0), origin, rotation);                   // 0
+                                b.position = position + TransformVector(new Vector3(0, size.y, 0), origin, rotation);              // 2
+                                c.position = position + TransformVector(new Vector3(size.x, 0, 0), origin, rotation);              // 1
+                                d.position = position + TransformVector(new Vector3(size.x, size.y, 0), origin, rotation);         // 3
+                                break;
+                            case 1:     // Back
+                                a.position = position + TransformVector(new Vector3(0, 0, size.z), origin, rotation);              // 4
+                                b.position = position + TransformVector(new Vector3(size.x, 0, size.z), origin, rotation);         // 5
+                                c.position = position + TransformVector(new Vector3(0, size.y, size.z), origin, rotation);         // 6
+                                d.position = position + TransformVector(new Vector3(size.x, size.y, size.z), origin, rotation);    // 7
+                                break;
+                            case 2:     // Left
+                                a.position = position + TransformVector(new Vector3(0, 0, 0), origin, rotation);                   // 0
+                                b.position = position + TransformVector(new Vector3(0, 0, size.z), origin, rotation);              // 4
+                                c.position = position + TransformVector(new Vector3(0, size.y, 0), origin, rotation);              // 2
+                                d.position = position + TransformVector(new Vector3(0, size.y, size.z), origin, rotation);         // 6
+                                break;
+                            case 3:     // Right
+                                a.position = position + TransformVector(new Vector3(size.x, 0, 0), origin, rotation);              // 1
+                                b.position = position + TransformVector(new Vector3(size.x, size.y, 0), origin, rotation);         // 3
+                                c.position = position + TransformVector(new Vector3(size.x, 0, size.z), origin, rotation);         // 5
+                                d.position = position + TransformVector(new Vector3(size.x, size.y, size.z), origin, rotation);    // 7
+                                break;
+                            case 4:     // Top
+                                a.position = position + TransformVector(new Vector3(0, size.y, 0), origin, rotation);              // 2
+                                b.position = position + TransformVector(new Vector3(0, size.y, size.z), origin, rotation);         // 6
+                                c.position = position + TransformVector(new Vector3(size.x, size.y, 0), origin, rotation);         // 3
+                                d.position = position + TransformVector(new Vector3(size.x, size.y, size.z), origin, rotation);    // 7
+                                break;
+                            case 5:     // Bottom
+                                a.position = position + TransformVector(new Vector3(0, 0, 0), origin, rotation);                   // 0
+                                b.position = position + TransformVector(new Vector3(size.x, 0, 0), origin, rotation);              // 1
+                                c.position = position + TransformVector(new Vector3(0, 0, size.z), origin, rotation);              // 4
+                                d.position = position + TransformVector(new Vector3(size.x, 0, size.z), origin, rotation);         // 5
+                                break;
                         }
 
-                        if (!IsOccluded(-Vector3.forward))
-                            AddFace(0, 1, 1, SideMaterial.Side);     // Front
+                        a.uv = new Vector2(0 * uScale, 0 * vScale);
+                        b.uv = new Vector2(1 * uScale, 0 * vScale);
+                        c.uv = new Vector2(0 * uScale, 1 * vScale);
+                        d.uv = new Vector2(1 * uScale, 1 * vScale);
 
-                        if (!IsOccluded(Vector3.forward))
-                            AddFace(1, 1, 1, SideMaterial.Side);     // Back
-
-                        if (!IsOccluded(-Vector3.right))
-                            AddFace(2, 1, 1, SideMaterial.Side);     // Left
-
-                        if (!IsOccluded(Vector3.right))
-                            AddFace(3, 1, 1, SideMaterial.Side);     // Right
-
-                        if (!IsOccluded(Vector3.up))
-                            AddFace(4, instance.brickResource.colliderSize.z, instance.brickResource.colliderSize.x, SideMaterial.Top);     // Top
-
-                        if (!IsOccluded(-Vector3.up))
-                            AddFace(5, instance.brickResource.colliderSize.x, instance.brickResource.colliderSize.z, SideMaterial.Top);     // Bottom
+                        vertices.Add(a);
+                        vertices.Add(b);
+                        vertices.Add(c);
+                        vertices.Add(d);
                     }
+
+                    bool IsOccluded(Vector3 direction)
+                    {
+                        bool occlude = true;
+                        direction = Quaternion.AngleAxis(instance.Angle, Vector3.up) * direction;
+
+                        BoundsInt overlapBounds = intBounds;
+                        overlapBounds.position += Vector3Int.RoundToInt(direction);
+
+                        foreach (Vector3Int c in overlapBounds.allPositionsWithin)
+                        {
+                            Vector3Int pos = c;
+
+                            if (intBounds.Contains(pos)) continue;
+                            if (!occludingCoords.Contains(pos))
+                            {
+                                occlude = false;
+                            }
+                        }
+
+                        return occlude;
+                    }
+
+                    if (!IsOccluded(-Vector3.forward))
+                        AddFace(0, 1, 1, SideMaterial.Side);     // Front
+
+                    if (!IsOccluded(Vector3.forward))
+                        AddFace(1, 1, 1, SideMaterial.Side);     // Back
+
+                    if (!IsOccluded(-Vector3.right))
+                        AddFace(2, 1, 1, SideMaterial.Side);     // Left
+
+                    if (!IsOccluded(Vector3.right))
+                        AddFace(3, 1, 1, SideMaterial.Side);     // Right
+
+                    if (!IsOccluded(Vector3.up))
+                        AddFace(4, instance.brickResource.colliderSize.z, instance.brickResource.colliderSize.x, SideMaterial.Top);     // Top
+
+                    if (!IsOccluded(-Vector3.up))
+                        AddFace(5, instance.brickResource.colliderSize.x, instance.brickResource.colliderSize.z, SideMaterial.Top);     // Bottom
                 }
+            }
 
-                Mesh mesh = new Mesh();
-                mesh.name = System.IO.Path.GetFileName(ctx.assetPath);
-                mesh.indexFormat = vertices.Count >= (65536) ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16;
+            Mesh mesh = new Mesh();
+            mesh.name = System.IO.Path.GetFileName(ctx.assetPath);
+            mesh.indexFormat = vertices.Count >= (65536) ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16;
 
-                mesh.SetVertexBufferParams(vertices.Count, vertexAttributes);
-                mesh.SetVertexBufferData(vertices, 0, 0, vertices.Count);
+            mesh.SetVertexBufferParams(vertices.Count, vertexAttributes);
+            mesh.SetVertexBufferData(vertices, 0, 0, vertices.Count);
 
-                mesh.subMeshCount = 2;
-                mesh.SetTriangles(sideIndices[ SideMaterial.Side ], 0);
-                mesh.SetTriangles(sideIndices[SideMaterial.Top], 1);
-                mesh.RecalculateBounds();
-                mesh.RecalculateNormals();
-                mesh.RecalculateTangents();
-                mesh.UploadMeshData(true);
+            mesh.subMeshCount = 2;
+            mesh.SetTriangles(sideIndices[SideMaterial.Side], 0);
+            mesh.SetTriangles(sideIndices[SideMaterial.Top], 1);
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
+            mesh.UploadMeshData(true);
 
-                root.AddComponent<MeshFilter>().sharedMesh = mesh;
+            root.AddComponent<MeshFilter>().sharedMesh = mesh;
 
-                Material[] materials = new Material[2]
-                {
+            Material[] materials = new Material[2]
+            {
                     UnityEngine.Resources.Load<Material>("Bricks/BrickSide"),
                     UnityEngine.Resources.Load<Material>("Bricks/BrickTop")
-                };
+            };
 
-                root.AddComponent<MeshRenderer>().sharedMaterials = materials;
+            root.AddComponent<MeshRenderer>().sharedMaterials = materials;
 
-                ctx.AddObjectToAsset("mesh", mesh);
-                ctx.AddObjectToAsset("saveData", save);
+            ctx.AddObjectToAsset("mesh", mesh);
+            ctx.AddObjectToAsset("saveData", save);
 
-                UnityEngine.Profiling.Profiler.EndSample();
-            }
+            UnityEngine.Profiling.Profiler.EndSample();
         }
     }
     public enum SideMaterial

@@ -33,6 +33,45 @@ namespace Blockland
 
             return lineCache;
         }
+        public void SkipLine()
+        {
+            base.ReadLine();
+            SetStringRuns(string.Empty);
+        }
+        bool IsComment(string line)
+        {
+            for (int i = 0; i < line.Length; i++)
+            {
+                if (char.IsWhiteSpace(line[i])) continue;
+
+                return line[i] == '/';
+            }
+
+            return true;
+        }
+        public string ReadNextNonEmptyLine(bool skipComments = true)
+        {
+            while (!base.EndOfStream)
+            {
+                string line = base.ReadLine();
+                bool blank = string.IsNullOrEmpty(line);
+                bool isComment = IsComment(line);
+                bool doSkip = (skipComments && isComment);
+                if (!blank && !doSkip)
+                {
+                    SetStringRuns(line);
+                    return line;
+                }
+            }
+
+            SetStringRuns(string.Empty);
+            return string.Empty;
+        }
+        public void SkipNonEmptyLine(int count, bool skipComments = true)
+        {
+            for (int i = 0; i < count; i++)
+                ReadNextNonEmptyLine(skipComments);
+        }
         public void SetStringRuns(string line)
         {
             lineCache = line;
@@ -56,6 +95,8 @@ namespace Blockland
                     // push to stringRuns
                     startedRun = false;
                     int count = i - startIndex;
+                    if (endOfLine)
+                        count++;
                     stringRuns.Add(new Run { count = count, start = startIndex });
                 }
             }

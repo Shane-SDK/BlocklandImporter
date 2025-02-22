@@ -14,9 +14,10 @@ namespace Blockland
         private void OnEnable()
         {
             BrickData brick = target as BrickData;
-            MeshBuilder meshBuilder = new MeshBuilder();
-            meshBuilder.AddBrick(new BrickInstance { angle = 0, color = Color.red, data =  brick, position = Vector3.zero });
-            meshPreview = new(meshBuilder.CreateMesh());
+            BrickInstance[] bricks = new BrickInstance[] { new BrickInstance { angle = 0, color = Color.red, data = brick, position = Vector3.zero } };
+            List<Face> faces = new List<Face>();
+            MeshBuilder.GetFaces(bricks, faces, true);
+            meshPreview = new(MeshBuilder.CreateMesh(faces, out _));
         }
         public override void OnInspectorGUI()
         {

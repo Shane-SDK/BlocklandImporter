@@ -28,18 +28,18 @@ namespace Blockland.Editor
             ctx.SetMainObject(root);
 
             // mesh builder
-            MeshBuilder meshBuilder = new(ctx);
-            foreach (BrickInstance brick in save.bricks)
-                meshBuilder.AddBrick(brick);
+            MeshBuilder meshBuilder = new();
 
-            Mesh mesh = meshBuilder.CreateMesh(mergeFaces);
+            List<Face> faces = new List<Face>();
+            MeshBuilder.GetFaces(save.bricks, faces, mergeFaces);
+            Mesh mesh = MeshBuilder.CreateMesh(faces, out TextureFace[] textureFaces);
 
             root.AddComponent<MeshFilter>().sharedMesh = mesh;
 
-            Material[] materials = new Material[meshBuilder.textureFaces.Length];
+            Material[] materials = new Material[textureFaces.Length];
             for (int i = 0; i < materials.Length; i++)
             {
-                TextureFace face = meshBuilder.textureFaces[i];
+                TextureFace face = textureFaces[i];
                 switch (face)
                 {
                     case TextureFace.Top:

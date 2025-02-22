@@ -14,29 +14,7 @@ namespace Blockland.Meshing
             new VertexAttributeDescriptor( VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4 ),
             new VertexAttributeDescriptor( VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2 ),
         };
-        public SubMeshDescriptor[] descriptors;
-        public TextureFace[] textureFaces;
-        public List<BrickInstance> bricks = new();
-        public List<Vertex> vertices = new List<Vertex>();
-        public Dictionary<TextureFace, List<uint>> sideIndices = new();
-#if UNITY_EDITOR
-        UnityEditor.AssetImporters.AssetImportContext importContext;
-#endif
-        public MeshBuilder()
-        {
-
-        }
-#if UNITY_EDITOR
-        public MeshBuilder(UnityEditor.AssetImporters.AssetImportContext importContext)
-        {
-            this.importContext = importContext;
-        }
-#endif
-        public void AddBrick(BrickInstance brick)
-        {
-            bricks.Add(brick);
-        }
-        public Mesh CreateMesh(bool merge = true)
+        public static void GetFaces(IList<BrickInstance> bricks, IList<Face> faces, bool merge = true)
         {
             Dictionary<Vector3Int, int> partLookup = new Dictionary<Vector3Int, int>();
             for (int i = 0; i < bricks.Count; i++)
@@ -71,8 +49,6 @@ namespace Blockland.Meshing
                 //Vector3 local = instance.InverseTransformPoint(occluderPoint);
             }
 
-            // todo - share coplanar verts
-
             for (int i = 0; i < bricks.Count; i++)
             {
                 BrickInstance instance = bricks[i];
@@ -103,65 +79,88 @@ namespace Blockland.Meshing
                 }
 
                 BrickData data = instance.data;
-                void InsertFaces(FaceSet faceSet)
+                void InsertFaces(FaceSet faceSet, ref IList<Face> faces)
                 {
                     foreach (Face face in faceSet.faces)
                     {
-                        // get indices that correspond to texture
-                        List<uint> textureIndices = GetIndices(face.texture);
+                        Face newFace = face;
 
-                        int offset = vertices.Count;
-                        textureIndices.Add((uint)offset + 0);
-                        textureIndices.Add((uint)offset + 1);
-                        textureIndices.Add((uint)offset + 3);
-                        textureIndices.Add((uint)offset + 1);
-                        textureIndices.Add((uint)offset + 2);
-                        textureIndices.Add((uint)offset + 3);
-
-                        for (int v = 0; v < 4; v++)
+                        for (int i = 0; i < 4; i++)
                         {
-                            Color color = face[v].color;
+                            FaceVertex newVertex = face[i];
+                            newVertex.position = Blockland.StudsToUnity(Quaternion.AngleAxis(instance.Angle, Vector3.up) * face[i].position + instance.position);
                             if (!face.colorOverride)
-                                color = instance.color;
-
-                            Vector3 transformedPosition = Blockland.StudsToUnity(Quaternion.AngleAxis(instance.Angle, Vector3.up) * face[v].position + instance.position);
-
-                            vertices.Add(new Vertex
-                            {
-                                position = transformedPosition,
-                                color = color,
-                                uv = face[v].uv
-                            });
+                                newVertex.color = instance.color;
+                            newFace[i] = newVertex;
                         }
+
+                        faces.Add(newFace);
                     }
                 }
 
                 if (!IsFaceOccluded(Vector3.forward))  // North / Front
-                    InsertFaces(data.faceSets[2]);
+                    InsertFaces(data.faceSets[2], ref faces);
 
                 if (!IsFaceOccluded(-Vector3.forward))   // South / Back
-                    InsertFaces(data.faceSets[4]);
+                    InsertFaces(data.faceSets[4], ref faces);
 
                 if (!IsFaceOccluded(Vector3.right))    // East / Right
-                    InsertFaces(data.faceSets[3]);
+                    InsertFaces(data.faceSets[3], ref faces);
 
                 if (!IsFaceOccluded(-Vector3.right))     // West / Left
-                    InsertFaces(data.faceSets[5]);
+                    InsertFaces(data.faceSets[5], ref faces);
 
                 if (!IsFaceOccluded(Vector3.up))    // Top
-                    InsertFaces(data.faceSets[0]);
+                    InsertFaces(data.faceSets[0], ref faces);
 
                 if (!IsFaceOccluded(-Vector3.up))   // Bottom
-                    InsertFaces(data.faceSets[1]);
+                    InsertFaces(data.faceSets[1], ref faces);
 
-                InsertFaces(data.faceSets[6]);  // Omni
+                InsertFaces(data.faceSets[6], ref faces);  // Omni
+            }
+        }
+        public static Mesh CreateMesh(ICollection<Face> faces, out TextureFace[] textureFaces)
+        {
+            SubMeshDescriptor[] descriptors;
+            List<Vertex> vertices = new List<Vertex>();
+            Dictionary<TextureFace, List<uint>> sideIndices = new();
+            Mesh mesh = new Mesh();
+
+            List<uint> GetIndices(TextureFace face)
+            {
+                if (!sideIndices.TryGetValue(face, out List<uint> indices))
+                {
+                    indices = new List<uint>();
+                    sideIndices[face] = indices;
+                }
+
+                return indices;
             }
 
-            Mesh mesh = new Mesh();
-#if UNITY_EDITOR
-            if (importContext != null)
-                mesh.name = System.IO.Path.GetFileName(importContext.assetPath);
-#endif
+            foreach (Face face in faces)
+            {
+                // get indices that correspond to texture
+                List<uint> textureIndices = GetIndices(face.texture);
+
+                int offset = vertices.Count;
+                textureIndices.Add((uint)offset + 0);
+                textureIndices.Add((uint)offset + 1);
+                textureIndices.Add((uint)offset + 3);
+                textureIndices.Add((uint)offset + 1);
+                textureIndices.Add((uint)offset + 2);
+                textureIndices.Add((uint)offset + 3);
+
+                for (int v = 0; v < 4; v++)
+                {
+                    vertices.Add(new Vertex
+                    {
+                        position = face[v].position,
+                        color = face[v].color,
+                        uv = face[v].uv
+                    });
+                }
+            }
+
             mesh.indexFormat = vertices.Count >= (65536) ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16;
 
             mesh.SetVertexBufferParams(vertices.Count, vertexAttributes);
@@ -206,16 +205,6 @@ namespace Blockland.Meshing
             mesh.UploadMeshData(true);
 
             return mesh;
-        }
-        List<uint> GetIndices(TextureFace face)
-        {
-            if (!sideIndices.TryGetValue(face, out List<uint> indices))
-            {
-                indices = new List<uint>();
-                sideIndices[face] = indices;
-            }
-
-            return indices;
         }
     }
     public struct Vertex

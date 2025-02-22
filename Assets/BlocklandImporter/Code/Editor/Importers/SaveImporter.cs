@@ -12,6 +12,7 @@ namespace Blockland.Editor
     [ScriptedImporter(0, "bls")]
     public class SaveImporter : ScriptedImporter
     {
+        public bool mergeFaces = true;
         public override void OnImportAsset(AssetImportContext ctx)
         {
             using FileStream file = System.IO.File.OpenRead(ctx.assetPath);
@@ -31,7 +32,7 @@ namespace Blockland.Editor
             foreach (BrickInstance brick in save.bricks)
                 meshBuilder.AddBrick(brick);
 
-            Mesh mesh = meshBuilder.CreateMesh();
+            Mesh mesh = meshBuilder.CreateMesh(mergeFaces);
 
             root.AddComponent<MeshFilter>().sharedMesh = mesh;
 
@@ -49,8 +50,16 @@ namespace Blockland.Editor
                         materials[i] = UnityEngine.Resources.Load<Material>("Bricks/BrickSide");
                         break;
                     case TextureFace.Print:
-                    case TextureFace.Ramp:
                         materials[i] = UnityEngine.Resources.Load<Material>("Bricks/Print");
+                        break;
+                    case TextureFace.Ramp:
+                        materials[i] = UnityEngine.Resources.Load<Material>("Bricks/Ramp");
+                        break;
+                    case TextureFace.BottomEdge:
+                        materials[i] = UnityEngine.Resources.Load<Material>("Bricks/BrickBottomEdge");
+                        break;
+                    case TextureFace.BottomLoop:
+                        materials[i] = UnityEngine.Resources.Load<Material>("Bricks/BrickBottomLoop");
                         break;
                 }
             }

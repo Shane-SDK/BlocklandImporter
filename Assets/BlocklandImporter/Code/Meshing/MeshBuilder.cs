@@ -36,7 +36,7 @@ namespace Blockland.Meshing
         {
             bricks.Add(brick);
         }
-        public Mesh CreateMesh()
+        public Mesh CreateMesh(bool merge = true)
         {
             Dictionary<Vector3Int, int> partLookup = new Dictionary<Vector3Int, int>();
             for (int i = 0; i < bricks.Count; i++)
@@ -102,170 +102,59 @@ namespace Blockland.Meshing
                     return true;
                 }
 
-                if (instance.data.type == BrickType.Brick)
+                BrickData data = instance.data;
+                void InsertFaces(FaceSet faceSet)
                 {
-                    void AddFace(int side, float uScale, float vScale, TextureFace sideMat)
+                    foreach (Face face in faceSet.faces)
                     {
-                        // Convert size from studs to unity units
-                        Vector3 size = Blockland.StudsToUnity(instance.data.size);
-                        Quaternion rotation = Quaternion.AngleAxis(instance.Angle, Vector3.up);
-
-                        Vector3 origin = Blockland.StudsToUnity((Vector3)instance.data.size / 2.0f);
-                        Vector3 position = Blockland.StudsToUnity(instance.position) - size / 2.0f;
-
-                        Vector3 TransformVector(Vector3 local, Vector3 origin, Quaternion rotation)
-                        {
-                            Vector3 offset = local - origin;
-                            offset = rotation * offset;
-
-                            return origin + offset;
-                        }
-
-                        Color color = instance.color;
-
-                        Vertex a = default, b = default, c = default, d = default;
-
-                        a.color = color;
-                        b.color = color;
-                        c.color = color;
-                        d.color = color;
+                        // get indices that correspond to texture
+                        List<uint> textureIndices = GetIndices(face.texture);
 
                         int offset = vertices.Count;
+                        textureIndices.Add((uint)offset + 0);
+                        textureIndices.Add((uint)offset + 1);
+                        textureIndices.Add((uint)offset + 3);
+                        textureIndices.Add((uint)offset + 1);
+                        textureIndices.Add((uint)offset + 2);
+                        textureIndices.Add((uint)offset + 3);
 
-                        List<uint> indices = GetIndices(sideMat);
-
-                        indices.Add((uint)offset + 0);
-                        indices.Add((uint)offset + 1);
-                        indices.Add((uint)offset + 3);
-                        indices.Add((uint)offset + 0);
-                        indices.Add((uint)offset + 3);
-                        indices.Add((uint)offset + 2);
-
-                        switch (side)
+                        for (int v = 0; v < 4; v++)
                         {
-                            case 0:     // Front
-                                a.position = position + TransformVector(new Vector3(0, 0, 0), origin, rotation);                   // 0
-                                b.position = position + TransformVector(new Vector3(0, size.y, 0), origin, rotation);              // 2
-                                c.position = position + TransformVector(new Vector3(size.x, 0, 0), origin, rotation);              // 1
-                                d.position = position + TransformVector(new Vector3(size.x, size.y, 0), origin, rotation);         // 3
-                                break;
-                            case 1:     // Back
-                                a.position = position + TransformVector(new Vector3(0, 0, size.z), origin, rotation);              // 4
-                                b.position = position + TransformVector(new Vector3(size.x, 0, size.z), origin, rotation);         // 5
-                                c.position = position + TransformVector(new Vector3(0, size.y, size.z), origin, rotation);         // 6
-                                d.position = position + TransformVector(new Vector3(size.x, size.y, size.z), origin, rotation);    // 7
-                                break;
-                            case 2:     // Left
-                                a.position = position + TransformVector(new Vector3(0, 0, 0), origin, rotation);                   // 0
-                                b.position = position + TransformVector(new Vector3(0, 0, size.z), origin, rotation);              // 4
-                                c.position = position + TransformVector(new Vector3(0, size.y, 0), origin, rotation);              // 2
-                                d.position = position + TransformVector(new Vector3(0, size.y, size.z), origin, rotation);         // 6
-                                break;
-                            case 3:     // Right
-                                a.position = position + TransformVector(new Vector3(size.x, 0, 0), origin, rotation);              // 1
-                                b.position = position + TransformVector(new Vector3(size.x, size.y, 0), origin, rotation);         // 3
-                                c.position = position + TransformVector(new Vector3(size.x, 0, size.z), origin, rotation);         // 5
-                                d.position = position + TransformVector(new Vector3(size.x, size.y, size.z), origin, rotation);    // 7
-                                break;
-                            case 4:     // Top
-                                a.position = position + TransformVector(new Vector3(0, size.y, 0), origin, rotation);              // 2
-                                b.position = position + TransformVector(new Vector3(0, size.y, size.z), origin, rotation);         // 6
-                                c.position = position + TransformVector(new Vector3(size.x, size.y, 0), origin, rotation);         // 3
-                                d.position = position + TransformVector(new Vector3(size.x, size.y, size.z), origin, rotation);    // 7
-                                break;
-                            case 5:     // Bottom
-                                a.position = position + TransformVector(new Vector3(0, 0, 0), origin, rotation);                   // 0
-                                b.position = position + TransformVector(new Vector3(size.x, 0, 0), origin, rotation);              // 1
-                                c.position = position + TransformVector(new Vector3(0, 0, size.z), origin, rotation);              // 4
-                                d.position = position + TransformVector(new Vector3(size.x, 0, size.z), origin, rotation);         // 5
-                                break;
-                        }
+                            Color color = face[v].color;
+                            if (!face.colorOverride)
+                                color = instance.color;
 
-                        a.uv = new Vector2(0 * uScale, 0 * vScale);
-                        b.uv = new Vector2(1 * uScale, 0 * vScale);
-                        c.uv = new Vector2(0 * uScale, 1 * vScale);
-                        d.uv = new Vector2(1 * uScale, 1 * vScale);
+                            Vector3 transformedPosition = Blockland.StudsToUnity(Quaternion.AngleAxis(instance.Angle, Vector3.up) * face[v].position + instance.position);
 
-                        vertices.Add(a);
-                        vertices.Add(b);
-                        vertices.Add(c);
-                        vertices.Add(d);
-                    }
-
-                    if (!IsFaceOccluded(-Vector3.forward))
-                        AddFace(0, 1, 1, TextureFace.Side);     // Front
-
-                    if (!IsFaceOccluded(Vector3.forward))
-                        AddFace(1, 1, 1, TextureFace.Side);     // Back
-
-                    if (!IsFaceOccluded(-Vector3.right))
-                        AddFace(2, 1, 1, TextureFace.Side);     // Left
-
-                    if (!IsFaceOccluded(Vector3.right))
-                        AddFace(3, 1, 1, TextureFace.Side);     // Right
-
-                    if (!IsFaceOccluded(Vector3.up))
-                        AddFace(4, instance.data.size.z, instance.data.size.x, TextureFace.Top);     // Top
-
-                    if (!IsFaceOccluded(-Vector3.up))
-                        AddFace(5, instance.data.size.x, instance.data.size.z, TextureFace.BottomEdge);     // Bottom
-                }
-                else  // Special
-                {
-                    BrickData data = instance.data;
-                    void InsertFaces(FaceSet faceSet)
-                    {
-                        foreach (Face face in faceSet.faces)
-                        {
-                            // get indices that correspond to texture
-                            List<uint> textureIndices = GetIndices(face.texture);
-
-                            int offset = vertices.Count;
-                            textureIndices.Add((uint)offset + 0);
-                            textureIndices.Add((uint)offset + 1);
-                            textureIndices.Add((uint)offset + 3);
-                            textureIndices.Add((uint)offset + 1);
-                            textureIndices.Add((uint)offset + 2);
-                            textureIndices.Add((uint)offset + 3);
-
-                            for (int v = 0; v < 4; v++)
+                            vertices.Add(new Vertex
                             {
-                                Color color = face[v].color;
-                                if (!face.colorOverride)
-                                    color = instance.color;
-
-                                Vector3 transformedPosition = Blockland.StudsToUnity(Quaternion.AngleAxis(instance.Angle, Vector3.up) * face[v].position + instance.position);
-
-                                vertices.Add(new Vertex
-                                {
-                                    position = transformedPosition,
-                                    color = color,
-                                    uv = face[v].uv
-                                });
-                            }
+                                position = transformedPosition,
+                                color = color,
+                                uv = face[v].uv
+                            });
                         }
                     }
-
-                    if (!IsFaceOccluded(Vector3.forward))  // North / Front
-                        InsertFaces(data.faceSets[2]);
-
-                    if (!IsFaceOccluded(-Vector3.forward))   // South / Back
-                        InsertFaces(data.faceSets[4]);
-
-                    if (!IsFaceOccluded(Vector3.right))    // East / Right
-                        InsertFaces(data.faceSets[3]);
-
-                    if (!IsFaceOccluded(-Vector3.right))     // West / Left
-                        InsertFaces(data.faceSets[5]);
-
-                    if (!IsFaceOccluded(Vector3.up))    // Top
-                        InsertFaces(data.faceSets[0]);
-
-                    if (!IsFaceOccluded(-Vector3.up))   // Bottom
-                        InsertFaces(data.faceSets[1]);
-
-                    InsertFaces(data.faceSets[6]);  // Omni
                 }
+
+                if (!IsFaceOccluded(Vector3.forward))  // North / Front
+                    InsertFaces(data.faceSets[2]);
+
+                if (!IsFaceOccluded(-Vector3.forward))   // South / Back
+                    InsertFaces(data.faceSets[4]);
+
+                if (!IsFaceOccluded(Vector3.right))    // East / Right
+                    InsertFaces(data.faceSets[3]);
+
+                if (!IsFaceOccluded(-Vector3.right))     // West / Left
+                    InsertFaces(data.faceSets[5]);
+
+                if (!IsFaceOccluded(Vector3.up))    // Top
+                    InsertFaces(data.faceSets[0]);
+
+                if (!IsFaceOccluded(-Vector3.up))   // Bottom
+                    InsertFaces(data.faceSets[1]);
+
+                InsertFaces(data.faceSets[6]);  // Omni
             }
 
             Mesh mesh = new Mesh();
@@ -313,6 +202,7 @@ namespace Blockland.Meshing
             mesh.RecalculateBounds();
             mesh.RecalculateNormals();
             mesh.RecalculateTangents();
+
             mesh.UploadMeshData(true);
 
             return mesh;

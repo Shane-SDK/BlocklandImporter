@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Blockland.Objects
@@ -9,6 +10,20 @@ namespace Blockland.Objects
         public Vector3Int size;
         public BrickType type;
         public FaceSet[] faceSets;
+        public IEnumerable<Face> GetFaces(FaceDirection direction)
+        {
+            if (faceSets == null)
+                yield break;
+
+            Face[] faces = faceSets[(int)direction].faces;
+            if (faces == null)
+                yield break;
+
+            foreach (Face face in faces)
+            {
+                yield return face;
+            }
+        }
         public static BrickData CreateFromReader(Reader reader)
         {    
             BrickData data = ScriptableObject.CreateInstance<BrickData>();
@@ -26,13 +41,88 @@ namespace Blockland.Objects
                     data.type = BrickType.Brick; break;
             }
 
-            if (data.type == BrickType.Brick)
-                return data;
-
             data.faceSets = new FaceSet[7];
             for (int i = 0; i < data.faceSets.Length; i++)
             {
                 data.faceSets[i] = new();
+            }
+
+            if (data.type == BrickType.Brick)
+            {
+                void AddFace(FaceDirection face, float uScale, float vScale, TextureFace sideMat)
+                {
+                    Color color = Color.white;
+                    FaceVertex a = default, b = default, c = default, d = default;
+
+                    a.color = color;
+                    b.color = color;
+                    c.color = color;
+                    d.color = color;
+
+                    switch (face)
+                    {
+                        case FaceDirection.South:     // Front
+                            a.position = new Vector3(0, 0, 0);                   // 0
+                            b.position = new Vector3(0, data.size.y, 0);              // 2
+                            c.position = new Vector3(data.size.x, 0, 0);              // 1
+                            d.position = new Vector3(data.size.x, data.size.y, 0);         // 3
+                            break;
+                        case FaceDirection.North:     // Back
+                            a.position = new Vector3(0, 0, data.size.z);              // 4
+                            b.position = new Vector3(data.size.x, 0, data.size.z);         // 5
+                            c.position = new Vector3(0, data.size.y, data.size.z);         // 6
+                            d.position = new Vector3(data.size.x, data.size.y, data.size.z);    // 7
+                            break;
+                        case FaceDirection.West:     // Left
+                            a.position = new Vector3(0, 0, 0);                   // 0
+                            b.position = new Vector3(0, 0, data.size.z);              // 4
+                            c.position = new Vector3(0, data.size.y, 0);              // 2
+                            d.position = new Vector3(0, data.size.y, data.size.z);         // 6
+                            break;
+                        case FaceDirection.East:     // Right
+                            a.position = new Vector3(data.size.x, 0, 0);              // 1
+                            b.position = new Vector3(data.size.x, data.size.y, 0);         // 3
+                            c.position = new Vector3(data.size.x, 0, data.size.z);         // 5
+                            d.position = new Vector3(data.size.x, data.size.y, data.size.z);    // 7
+                            break;
+                        case FaceDirection.Top:     // Top
+                            a.position = new Vector3(0, data.size.y, 0);              // 2
+                            b.position = new Vector3(0, data.size.y, data.size.z);         // 6
+                            c.position = new Vector3(data.size.x, data.size.y, 0);         // 3
+                            d.position = new Vector3(data.size.x, data.size.y, data.size.z);    // 7
+                            break;
+                        case FaceDirection.Bottom:     // Bottom
+                            a.position = new Vector3(0, 0, 0);                   // 0
+                            b.position = new Vector3(data.size.x, 0, 0);              // 1
+                            c.position = new Vector3(0, 0, data.size.z);              // 4
+                            d.position = new Vector3(data.size.x, 0, data.size.z);         // 5
+                            break;
+                    }
+
+                    Vector3 offset = (Vector3)data.size / 2.0f;
+                    a.position -= offset;
+                    b.position -= offset;
+                    c.position -= offset;
+                    d.position -= offset;
+
+                    a.uv = new Vector2(1 * uScale, 0 * vScale);
+                    b.uv = new Vector2(1 * uScale, 1 * vScale);
+                    c.uv = new Vector2(0 * uScale, 0 * vScale);
+                    d.uv = new Vector2(0 * uScale, 1 * vScale);
+
+                    FaceSet set = data.faceSets[(int)face];
+                    set.faces = new Face[1];
+                    set.faces[0] = new Face { a = a, b = b, c = d, d = c, color = color, colorOverride = false, texture = sideMat };
+                }
+
+                AddFace(FaceDirection.North, 1, 1, TextureFace.Side);     // Front
+                AddFace(FaceDirection.South, 1, 1, TextureFace.Side);     // Back
+                AddFace(FaceDirection.West, 1, 1, TextureFace.Side);     // Left
+                AddFace(FaceDirection.East, 1, 1, TextureFace.Side);     // Right
+                AddFace(FaceDirection.Top, data.size.x, data.size.z, TextureFace.Top);     // Top
+                AddFace(FaceDirection.Bottom, data.size.z, data.size.x, TextureFace.BottomLoop);     // Bottom
+
+                return data;
             }
 
             if (data.type == BrickType.Special)
@@ -128,6 +218,16 @@ namespace Blockland.Objects
                     System.Array.Fill(colorBuffer, Color.white);
                 }
 
+                //void Swap(int a, int b)
+                //{
+                //    Vector2 temp = uvBuffer[a];
+                //    uvBuffer[a] = uvBuffer[b];
+                //    uvBuffer[b] = temp;
+                //}
+
+                //Swap(0, 1);
+                //Swap(3, 2);
+
                 for (int v = 0; v < 4; v++)
                 {
                     face[v] = new FaceVertex { position = positionBuffer[v], uv = uvBuffer[v], color = colorBuffer[v] };
@@ -181,6 +281,7 @@ namespace Blockland.Objects
     [System.Serializable]
     public struct Face
     {
+        public Plane Plane => new Plane(a.position, b.position, c.position);
         public FaceVertex this[int i]
         {
             get
@@ -216,5 +317,15 @@ namespace Blockland.Objects
         public Vector3 position;
         public Color color;
         public Vector2 uv;
+    }
+    public enum FaceDirection
+    {
+        Top = 0,
+        Bottom = 1,
+        North = 2,
+        East = 3,
+        South = 4,
+        West = 5,
+        Omni = 6,
     }
 }

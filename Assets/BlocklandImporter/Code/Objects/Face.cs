@@ -36,11 +36,11 @@ namespace Blockland.Objects
         public Color color;
         public bool IsOrth()
         {
-            Vector3 bottomEdge = (b.position - a.position).normalized;
-            Vector3 topEdge = (d.position - c.position).normalized;
+            Vector3 bottomEdge = (this[1].position - this[2].position).normalized;
+            Vector3 topEdge = (this[0].position - this[3].position).normalized;
 
-            Vector3 leftEdge = (d.position - a.position).normalized;
-            Vector3 rightEdge = (c.position - b.position).normalized;
+            Vector3 leftEdge = (this[2].position - this[3].position).normalized;
+            Vector3 rightEdge = (this[0].position - this[1].position).normalized;
 
             if (Mathf.Abs(Vector3.Dot(bottomEdge, topEdge)) != 1.0f)
                 return false;

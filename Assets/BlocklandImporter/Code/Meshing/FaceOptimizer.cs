@@ -1,6 +1,4 @@
 using Blockland.Objects;
-using PlasticGui.WorkspaceWindow;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,13 +94,13 @@ namespace Blockland.Meshing
                 switch (type)
                 {
                     case Side.Bottom:
-                        return new Edge(face.a.position, face.b.position, type);
+                        return new Edge(face[1].position, face[2].position, type);
                     case Side.Left:
-                        return new Edge(face.a.position, face.d.position, type);
+                        return new Edge(face[2].position, face[3].position, type);
                     case Side.Right:
-                        return new Edge(face.c.position, face.b.position, type);
+                        return new Edge(face[1].position, face[0].position, type);
                     case Side.Top:
-                        return new Edge(face.c.position, face.d.position, type);
+                        return new Edge(face[3].position, face[0].position, type);
                 }
 
                 return default;
@@ -129,26 +127,26 @@ namespace Blockland.Meshing
             {
                 if (side == Side.Bottom)
                 {
-                    a = 0;
-                    b = 1;
+                    a = 1;
+                    b = 2;
                     return;
                 }
                 if (side == Side.Top)
                 {
-                    a = 2;
+                    a = 0;
                     b = 3;
                     return;
                 }
                 if (side == Side.Left)
                 {
-                    a = 0;
+                    a = 2;
                     b = 3;
                     return;
                 }
                 if (side == Side.Right)
                 {
-                    a = 1;
-                    b = 2;
+                    a = 0;
+                    b = 1;
                     return;
                 }
 
@@ -219,12 +217,26 @@ namespace Blockland.Meshing
                 edgeMap.Clear();
                 for (int i = 0; i < faces.Count; i++)
                 {
-                    foreach (Edge edge in Edge.GetEdges(faces[i]))
+                    Face face = faces[i];
+                    foreach (Edge edge in Edge.GetEdges(face))
                     {
                         if (edgeMap.TryGetValue(edge, out (int, int) pair))
                         {
                             // set other pair index
                             edgeMap[edge] = (pair.Item1, i);
+                            Face otherFace = faces[pair.Item1];
+                            // set first entry to be whichever face is either the bottom-most or left-most
+                            if (edge.side == Edge.Side.Left || edge.side == Edge.Side.Right)
+                            {
+                                if (Edge.FromFace(otherFace, edge.side).a.x > edge.a.x)
+                                    edgeMap[edge] = (i, pair.Item1);
+                            }
+                            
+                            if (edge.side == Edge.Side.Top || edge.side == Edge.Side.Bottom)
+                            {
+                                if (Edge.FromFace(otherFace, edge.side).a.y > edge.a.y)
+                                    edgeMap[edge] = (i, pair.Item1);
+                            }
                         }
                         else
                         {
@@ -235,10 +247,6 @@ namespace Blockland.Meshing
             }
             public void MergeFaces(int maxIterations)
             {
-                bool Compare(float a, float b)
-                {
-                    return Mathf.Abs(a - b) <= float.Epsilon;
-                }
                 int iter = 0;
                 while(true)
                 {
@@ -274,6 +282,7 @@ namespace Blockland.Meshing
                         if (a.colorOverride != b.colorOverride) continue;
                         if (a.colorOverride && b.colorOverride)
                             if (a.color != b.color) continue;
+
                         if (!a.IsOrth() || !b.IsOrth()) continue;
 
                         // get the opposite edge of each face
@@ -285,55 +294,54 @@ namespace Blockland.Meshing
                         Edge.Side faceAOppositeEdge = Edge.GetOppositeSide(aEdgeSide);
                         Edge.Side faceBOppositeEdge = Edge.GetOppositeSide(bEdgeSide);
 
-                        Edge.GetIndices(faceAOppositeEdge, out int faceA0, out int faceA4);
-                        Edge.GetIndices(faceBOppositeEdge, out int faceB2, out int faceB3);
+                        Edge.GetIndices(faceAOppositeEdge, out int faceA0, out int faceA1);
+                        Edge.GetIndices(faceBOppositeEdge, out int faceB0, out int faceB1);
 
-                        if (a[faceA0].color != b[faceB2].color) continue;
+                        if (a[faceA0].color != b[faceB0].color) continue;
 
                         // compare UVs
                         // if the ratio between the edge length and UV tiling is not the same, they cannot be merged
                         Edge.Side faceAAdjacentSide = Edge.GetAdjacentSide(aEdgeSide);
                         Edge.Side faceBAdjacentSide = Edge.GetAdjacentSide(bEdgeSide);
 
-                        float edgeALengthUVRatio = Edge.GetLengthUVRatio(a, faceAAdjacentSide);
-                        float edgeBLengthUVRatio = Edge.GetLengthUVRatio(b, faceBAdjacentSide);
-                        if (Mathf.Abs(edgeALengthUVRatio - edgeBLengthUVRatio) > float.Epsilon) continue;
+                        Edge.GetIndices(faceAAdjacentSide, out int adjacentAIndex0, out int adjacentAIndex1);
+                        Edge.GetIndices(faceBAdjacentSide, out int adjacentBIndex0, out int adjacentBIndex1);
+                        float edgeALength = (a[adjacentAIndex0].position - a[adjacentAIndex1].position).magnitude;
+                        float edgeBLength = (b[adjacentBIndex0].position - b[adjacentBIndex1].position).magnitude;
+                        float edgeAUVLength = (a[adjacentAIndex0].uv - a[adjacentAIndex1].uv).magnitude;
+                        float edgeBUVLength = (b[adjacentBIndex0].uv - b[adjacentBIndex1].uv).magnitude;
+                        float edgeAUVRatio = (edgeALength / edgeAUVLength);
+                        float edgeBUVRatio = (edgeBLength / edgeBUVLength);
+
+                        if (Mathf.Abs(edgeAUVRatio - edgeBUVRatio) > 0.001f) continue;
 
                         Face newFace = a;
                         newFace[faceA0] = a[faceA0];
-                        newFace[faceA4] = a[faceA4];
-                        newFace[faceB2] = b[faceB2];
-                        newFace[faceB3] = b[faceB3];
+                        newFace[faceA1] = a[faceA1];
+                        newFace[faceB0] = b[faceB0];
+                        newFace[faceB1] = b[faceB1];
 
                         FaceVertex a0 = newFace[faceA0];
-                        FaceVertex a4 = newFace[faceA4];
-                        FaceVertex b2 = newFace[faceB2];
-                        FaceVertex b3 = newFace[faceB3];
+                        FaceVertex a4 = newFace[faceA1];
+                        FaceVertex b2 = newFace[faceB0];
+                        FaceVertex b3 = newFace[faceB1];
 
-                        if (faceBOppositeEdge == Edge.Side.Right)
+                        if (edge.side == Edge.Side.Right || edge.side == Edge.Side.Left)
                         {
-                            b2.uv.x *= 2;
-                            b3.uv.x *= 2;
+                            b2.uv.x = edgeAUVLength + edgeBUVLength;
+                            b3.uv.x = edgeAUVLength + edgeBUVLength;
 
-                            newFace[faceB2] = b2;
-                            newFace[faceB3] = b3;
+                            newFace[faceB0] = b2;
+                            newFace[faceB1] = b3;
                         }
-                        else if (faceBOppositeEdge == Edge.Side.Top)
+                        else if (edge.side == Edge.Side.Top || edge.side == Edge.Side.Bottom)
                         {
-                            a4.uv.y *= 2;
-                            b3.uv.y *= 2;
+                            a4.uv.y = edgeAUVLength + edgeBUVLength;
+                            b3.uv.y = edgeAUVLength + edgeBUVLength;
 
-                            newFace[faceA4] = a4;
-                            newFace[faceB3] = b3;
+                            newFace[faceA1] = a4;
+                            newFace[faceB1] = b3;
                         }
-                        
-                        //else
-                        //{
-                        //    b2.uv.x *= 2;
-                        //    b3.uv.x *= 2;
-                        //}
-
-                        
 
                         newMergedFaces.Add(newFace);
                         remainingFaces.Remove(pair.Item1);

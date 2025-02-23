@@ -123,6 +123,75 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &317280337
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -164800152020236557, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+        type: 3}
+      propertyPath: m_Name
+      value: ACM City
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 328.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: -9137962142385034750, guid: 34d51c00c646fac4c9dfc8436ac19dec,
+    type: 3}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -378,6 +447,75 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
+--- !u!1001 &472512593
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -164800152020236557, guid: 515edc973e0928241b09eccd0b523b7d,
+        type: 3}
+      propertyPath: m_Name
+      value: 'Afghanistan DM '
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 515edc973e0928241b09eccd0b523b7d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 138.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 515edc973e0928241b09eccd0b523b7d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 515edc973e0928241b09eccd0b523b7d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -261.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 515edc973e0928241b09eccd0b523b7d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 515edc973e0928241b09eccd0b523b7d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 515edc973e0928241b09eccd0b523b7d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 515edc973e0928241b09eccd0b523b7d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 515edc973e0928241b09eccd0b523b7d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 515edc973e0928241b09eccd0b523b7d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6625930945322245290, guid: 515edc973e0928241b09eccd0b523b7d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: -9137962142385034750, guid: 515edc973e0928241b09eccd0b523b7d,
+    type: 3}
 --- !u!1001 &1236129937
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -465,11 +603,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: House
       objectReference: {fileID: 0}
-    - target: {fileID: 4523668573119107543, guid: 9603c96e0d7fc9e44a558fd87f18594e,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: efc291040116c034ebf99c4a012b80f1, type: 2}
     - target: {fileID: 6625930945322245290, guid: 9603c96e0d7fc9e44a558fd87f18594e,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -534,3 +667,5 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 1296547156}
   - {fileID: 1236129937}
+  - {fileID: 317280337}
+  - {fileID: 472512593}

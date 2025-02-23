@@ -8,3 +8,5 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 3ec8e045f7d92bd43933be3a42500498, type: 3}
+  maxIterations: 1000
+  mergeFaces: 0

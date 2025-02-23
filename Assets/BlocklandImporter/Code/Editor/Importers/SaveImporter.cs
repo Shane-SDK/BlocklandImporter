@@ -12,6 +12,7 @@ namespace Blockland.Editor
     [ScriptedImporter(0, "bls")]
     public class SaveImporter : ScriptedImporter
     {
+        public int maxIterations = 100;
         public bool mergeFaces = true;
         public override void OnImportAsset(AssetImportContext ctx)
         {
@@ -31,7 +32,16 @@ namespace Blockland.Editor
             MeshBuilder meshBuilder = new();
 
             List<Face> faces = new List<Face>();
-            MeshBuilder.GetFaces(save.bricks, faces, mergeFaces);
+            MeshBuilder.GetFaces(save.bricks, faces);
+
+            if (mergeFaces)
+            {
+                List<Face> mergedFaces = new();
+                FaceOptimizer optimizer = new FaceOptimizer();
+                optimizer.OptimizeFaces(faces, mergedFaces, maxIterations);
+                faces = mergedFaces;
+            }
+
             Mesh mesh = MeshBuilder.CreateMesh(faces, out TextureFace[] textureFaces);
 
             root.AddComponent<MeshFilter>().sharedMesh = mesh;

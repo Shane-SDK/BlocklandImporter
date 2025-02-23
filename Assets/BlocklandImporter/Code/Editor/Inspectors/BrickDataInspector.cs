@@ -16,7 +16,7 @@ namespace Blockland
             BrickData brick = target as BrickData;
             BrickInstance[] bricks = new BrickInstance[] { new BrickInstance { angle = 0, color = Color.red, data = brick, position = Vector3.zero } };
             List<Face> faces = new List<Face>();
-            MeshBuilder.GetFaces(bricks, faces, true);
+            MeshBuilder.GetFaces(bricks, faces);
             meshPreview = new(MeshBuilder.CreateMesh(faces, out _));
         }
         public override void OnInspectorGUI()

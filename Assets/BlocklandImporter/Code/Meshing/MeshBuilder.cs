@@ -14,7 +14,7 @@ namespace Blockland.Meshing
             new VertexAttributeDescriptor( VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4 ),
             new VertexAttributeDescriptor( VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2 ),
         };
-        public static void GetFaces(IList<BrickInstance> bricks, IList<Face> faces, bool merge = true)
+        public static void GetFaces(IList<BrickInstance> bricks, IList<Face> faces)
         {
             Dictionary<Vector3Int, int> partLookup = new Dictionary<Vector3Int, int>();
             for (int i = 0; i < bricks.Count; i++)
@@ -145,8 +145,8 @@ namespace Blockland.Meshing
                 int offset = vertices.Count;
                 textureIndices.Add((uint)offset + 0);
                 textureIndices.Add((uint)offset + 1);
-                textureIndices.Add((uint)offset + 3);
-                textureIndices.Add((uint)offset + 1);
+                textureIndices.Add((uint)offset + 2);
+                textureIndices.Add((uint)offset + 0);
                 textureIndices.Add((uint)offset + 2);
                 textureIndices.Add((uint)offset + 3);
 

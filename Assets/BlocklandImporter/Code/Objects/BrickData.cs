@@ -61,41 +61,41 @@ namespace Blockland.Objects
 
                     switch (face)
                     {
-                        case FaceDirection.South:     // Front
-                            a.position = new Vector3(0, 0, 0);                   // 0
-                            b.position = new Vector3(0, data.size.y, 0);              // 2
-                            c.position = new Vector3(data.size.x, 0, 0);              // 1
-                            d.position = new Vector3(data.size.x, data.size.y, 0);         // 3
+                        case FaceDirection.South:
+                            a.position = new Vector3(data.size.x, data.size.y, 0);            
+                            b.position = new Vector3(data.size.x, 0, 0);             
+                            c.position = new Vector3(0, 0, 0);                 
+                            d.position = new Vector3(0, data.size.y, 0);        
                             break;
-                        case FaceDirection.North:     // Back
-                            a.position = new Vector3(0, 0, data.size.z);              // 4
-                            b.position = new Vector3(data.size.x, 0, data.size.z);         // 5
-                            c.position = new Vector3(0, data.size.y, data.size.z);         // 6
-                            d.position = new Vector3(data.size.x, data.size.y, data.size.z);    // 7
+                        case FaceDirection.North:    
+                            a.position = new Vector3(0, data.size.y, data.size.z);         
+                            b.position = new Vector3(0, 0, data.size.z);         
+                            c.position = new Vector3(data.size.x, 0, data.size.z);             
+                            d.position = new Vector3(data.size.x, data.size.y, data.size.z);   
                             break;
-                        case FaceDirection.West:     // Left
-                            a.position = new Vector3(0, 0, 0);                   // 0
-                            b.position = new Vector3(0, 0, data.size.z);              // 4
-                            c.position = new Vector3(0, data.size.y, 0);              // 2
-                            d.position = new Vector3(0, data.size.y, data.size.z);         // 6
+                        case FaceDirection.West:  
+                            a.position = new Vector3(0, data.size.y, 0);              
+                            b.position = new Vector3(0, 0, 0);              
+                            c.position = new Vector3(0, 0, data.size.z);                
+                            d.position = new Vector3(0, data.size.y, data.size.z);       
                             break;
-                        case FaceDirection.East:     // Right
-                            a.position = new Vector3(data.size.x, 0, 0);              // 1
-                            b.position = new Vector3(data.size.x, data.size.y, 0);         // 3
-                            c.position = new Vector3(data.size.x, 0, data.size.z);         // 5
-                            d.position = new Vector3(data.size.x, data.size.y, data.size.z);    // 7
+                        case FaceDirection.East:     
+                            a.position = new Vector3(data.size.x, data.size.y, data.size.z);     
+                            b.position = new Vector3(data.size.x, 0, data.size.z);       
+                            c.position = new Vector3(data.size.x, 0, 0);              
+                            d.position = new Vector3(data.size.x, data.size.y, 0);   
                             break;
-                        case FaceDirection.Top:     // Top
-                            a.position = new Vector3(0, data.size.y, 0);              // 2
-                            b.position = new Vector3(0, data.size.y, data.size.z);         // 6
-                            c.position = new Vector3(data.size.x, data.size.y, 0);         // 3
-                            d.position = new Vector3(data.size.x, data.size.y, data.size.z);    // 7
+                        case FaceDirection.Top:    
+                            a.position = new Vector3(data.size.x, data.size.y, data.size.z);   
+                            b.position = new Vector3(data.size.x, data.size.y, 0);      
+                            c.position = new Vector3(0, data.size.y, 0);             
+                            d.position = new Vector3(0, data.size.y, data.size.z);       
                             break;
-                        case FaceDirection.Bottom:     // Bottom
-                            a.position = new Vector3(0, 0, 0);                   // 0
-                            b.position = new Vector3(data.size.x, 0, 0);              // 1
-                            c.position = new Vector3(0, 0, data.size.z);              // 4
-                            d.position = new Vector3(data.size.x, 0, data.size.z);         // 5
+                        case FaceDirection.Bottom:    
+                            a.position = new Vector3(data.size.x, 0, 0);             
+                            b.position = new Vector3(data.size.x, 0, data.size.z);        
+                            c.position = new Vector3(0, 0, data.size.z);           
+                            d.position = new Vector3(0, 0, 0);                   
                             break;
                     }
 
@@ -105,14 +105,14 @@ namespace Blockland.Objects
                     c.position -= offset;
                     d.position -= offset;
 
-                    a.uv = new Vector2(1 * uScale, 0 * vScale);
-                    b.uv = new Vector2(1 * uScale, 1 * vScale);
+                    a.uv = new Vector2(1 * uScale, 1 * vScale);
+                    b.uv = new Vector2(1 * uScale, 0 * vScale);
                     c.uv = new Vector2(0 * uScale, 0 * vScale);
                     d.uv = new Vector2(0 * uScale, 1 * vScale);
 
                     FaceSet set = data.faceSets[(int)face];
                     set.faces = new Face[1];
-                    set.faces[0] = new Face { a = a, b = b, c = d, d = c, color = color, colorOverride = false, texture = sideMat };
+                    set.faces[0] = new Face { a = a, b = b, c = c, d = d, color = color, colorOverride = false, texture = sideMat };
                 }
 
                 AddFace(FaceDirection.North, 1, 1, TextureFace.Side);     // Front
@@ -218,20 +218,11 @@ namespace Blockland.Objects
                     System.Array.Fill(colorBuffer, Color.white);
                 }
 
-                //void Swap(int a, int b)
-                //{
-                //    Vector2 temp = uvBuffer[a];
-                //    uvBuffer[a] = uvBuffer[b];
-                //    uvBuffer[b] = temp;
-                //}
+                face[0] = new FaceVertex { position = positionBuffer[0], uv = uvBuffer[1], color = colorBuffer[0] };
+                face[1] = new FaceVertex { position = positionBuffer[1], uv = uvBuffer[0], color = colorBuffer[1] };
+                face[2] = new FaceVertex { position = positionBuffer[2], uv = uvBuffer[3], color = colorBuffer[2] };
+                face[3] = new FaceVertex { position = positionBuffer[3], uv = uvBuffer[2], color = colorBuffer[3] };
 
-                //Swap(0, 1);
-                //Swap(3, 2);
-
-                for (int v = 0; v < 4; v++)
-                {
-                    face[v] = new FaceVertex { position = positionBuffer[v], uv = uvBuffer[v], color = colorBuffer[v] };
-                }
                 reader.SkipNonEmptyLine(5);  // normal data
 
                 set.faces[i] = face;

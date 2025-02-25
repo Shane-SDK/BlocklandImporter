@@ -422,9 +422,6 @@ namespace Blockland.Meshing
                             newFace.SetPosition(sharedATopIndex, b[bottomBIndex].position);
                             newFace.SetPosition(sharedABottomIndex, b[topBIndex].position);
                         }
-
-                        // at this point the two faces are orth. and can be merged, geometrically
-
                         // check if UVs can tile
 
                         newMergedFaces.Add(newFace);

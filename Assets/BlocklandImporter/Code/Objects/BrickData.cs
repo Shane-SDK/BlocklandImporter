@@ -10,6 +10,9 @@ namespace Blockland.Objects
         public Vector3Int size;
         public BrickType type;
         public FaceSet[] faceSets;
+        public bool xSymmetry = false;
+        public bool ySymmetry = false;
+        public bool zSymmetry = false;
         public IEnumerable<Face> GetFaces(FaceDirection direction)
         {
             if (faceSets == null)
@@ -23,6 +26,61 @@ namespace Blockland.Objects
             {
                 yield return face;
             }
+        }
+        public bool HasSymmetry(int axis)
+        {
+            // todo - use just contours to establish symmetry
+
+            int faceSetBIndex, faceSetAIndex;
+
+            switch (axis)
+            {
+                case 0: // right/left
+                    faceSetAIndex = (int)FaceDirection.East;
+                    faceSetBIndex = (int)FaceDirection.West;
+                    break;
+                case 1: // up/down
+                    faceSetAIndex = (int)FaceDirection.Top;
+                    faceSetBIndex = (int)FaceDirection.Bottom;
+                    break;
+                case 2: // forward/back
+                    faceSetAIndex = (int)FaceDirection.North;
+                    faceSetBIndex = (int)FaceDirection.South;
+                    break;
+                default:
+                    return false;
+            }
+
+            FaceSet a = faceSets[faceSetAIndex];
+            FaceSet b = faceSets[faceSetBIndex];
+
+            // check if opposite sides have same number of faces
+            if (a.faces.Length != b.faces.Length) return false;
+
+            // initialize points to lookup
+            HashSet<Vector3> points = new();
+            foreach (Face face in a.faces)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    if (!points.Contains(face[i].position))
+                        points.Add(face[i].position);
+                }
+            }
+
+            foreach (Face face in b.faces)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    Vector3 mirroredPoint = face[i].position;
+                    mirroredPoint[axis] *= -1;
+
+                    if (!points.Contains(mirroredPoint))
+                        return false;
+                }
+            }
+
+            return true;
         }
         public static BrickData CreateFromReader(Reader reader)
         {    
@@ -125,6 +183,8 @@ namespace Blockland.Objects
                 return data;
             }
 
+            // brick has geometry at this point
+
             if (data.type == BrickType.Special)
             {
                 // brick volume data
@@ -154,6 +214,10 @@ namespace Blockland.Objects
                 ReadFaces(data.faceSets[i], reader);
             }
 
+            data.xSymmetry = data.HasSymmetry(0);
+            data.ySymmetry = data.HasSymmetry(1);
+            data.zSymmetry = data.HasSymmetry(2);
+
             return data;
         }
         static void ReadFaces(FaceSet set, Reader reader)
@@ -172,6 +236,7 @@ namespace Blockland.Objects
             set.faces = new Face[faceCount];
             if (faceCount == 0)
                 return;
+
             Vector3[] positionBuffer = new Vector3[4];
             Color[] colorBuffer = new Color[4];
             Vector2[] uvBuffer = new Vector2[4];

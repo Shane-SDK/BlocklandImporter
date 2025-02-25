@@ -27,7 +27,7 @@ namespace Blockland.Objects
                 yield return face;
             }
         }
-        public bool HasSymmetry(int axis)
+        public bool CalculateSymmetry(int axis)
         {
             // todo - use just contours to establish symmetry
 
@@ -81,6 +81,14 @@ namespace Blockland.Objects
             }
 
             return true;
+        }
+        public bool HasSymmetry(int axis)
+        {
+            if (axis == 0) return xSymmetry;
+            if (axis == 1) return ySymmetry;
+            if (axis == 2) return zSymmetry;
+
+            return false;
         }
         public static BrickData CreateFromReader(Reader reader)
         {    
@@ -214,9 +222,9 @@ namespace Blockland.Objects
                 ReadFaces(data.faceSets[i], reader);
             }
 
-            data.xSymmetry = data.HasSymmetry(0);
-            data.ySymmetry = data.HasSymmetry(1);
-            data.zSymmetry = data.HasSymmetry(2);
+            data.xSymmetry = data.CalculateSymmetry(0);
+            data.ySymmetry = data.CalculateSymmetry(1);
+            data.zSymmetry = data.CalculateSymmetry(2);
 
             return data;
         }

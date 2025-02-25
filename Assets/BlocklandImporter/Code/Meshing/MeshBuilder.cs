@@ -56,19 +56,43 @@ namespace Blockland.Meshing
                 instance.GetTransformedBounds(out Bounds bounds);
                 instance.GetTransformedBounds(out BoundsInt intBounds);
 
-                bool IsFaceOccluded(Vector3 direction)
+                bool IsFaceOccluded(Vector3 direction, int axisIndex)
                 {
                     direction = Quaternion.AngleAxis(instance.Angle, Vector3.up) * direction;
+                    int transformedAxisIndex = axisIndex;
+                    bool turn90 = instance.angle % 2 == 1;
+                    if (turn90 && axisIndex != 1)
+                        transformedAxisIndex = axisIndex == 0 ? 2 : 0;
 
                     BoundsInt overlapBounds = intBounds;
                     overlapBounds.position += Vector3Int.RoundToInt(direction);
 
-                    foreach (Vector3Int c in overlapBounds.allPositionsWithin)
+                    foreach (Vector3Int pos in overlapBounds.allPositionsWithin)
                     {
-                        Vector3Int pos = c;
+                        if (intBounds.Contains(pos)) continue;  // todo FIX THIS SHIT, USE SMARTER BOUNDS
 
-                        if (intBounds.Contains(pos)) continue;
-                        if (!IsOccluding(c, -direction, Direction.Backward))
+                        if (!partLookup.TryGetValue(pos, out int partIndex))
+                            return false;
+
+                        BrickInstance otherInstance = bricks[partIndex];
+                        if (otherInstance.data == instance.data)
+                        {
+                            Vector3 difference = otherInstance.position - instance.position;
+                            difference[transformedAxisIndex] = 0;
+                            if (difference.sqrMagnitude == 0.0f)  // only test for aligned bricks
+                            {
+                                if (Mathf.DeltaAngle(otherInstance.Angle, instance.Angle) == 0.0f && instance.data.HasSymmetry(axisIndex))  // same orientation
+                                {
+                                    return true;
+                                }
+                                //else if (Mathf.DeltaAngle(otherInstance.Angle, instance.Angle) == 180.0f)  // opposite directions
+                                //{
+                                //    return true;
+                                //}
+                            }
+                        }
+
+                        if (!IsOccluding(pos, -direction, Direction.Backward))
                         {
                             return false;
                         }
@@ -98,22 +122,22 @@ namespace Blockland.Meshing
                     }
                 }
 
-                if (!IsFaceOccluded(Vector3.forward))  // North / Front
+                if (!IsFaceOccluded(Vector3.forward, 2))  // North / Front
                     InsertFaces(data.faceSets[2], ref faces);
 
-                if (!IsFaceOccluded(-Vector3.forward))   // South / Back
+                if (!IsFaceOccluded(-Vector3.forward, 2))   // South / Back
                     InsertFaces(data.faceSets[4], ref faces);
 
-                if (!IsFaceOccluded(Vector3.right))    // East / Right
+                if (!IsFaceOccluded(Vector3.right, 0))    // East / Right
                     InsertFaces(data.faceSets[3], ref faces);
 
-                if (!IsFaceOccluded(-Vector3.right))     // West / Left
+                if (!IsFaceOccluded(-Vector3.right, 0))     // West / Left
                     InsertFaces(data.faceSets[5], ref faces);
 
-                if (!IsFaceOccluded(Vector3.up))    // Top
+                if (!IsFaceOccluded(Vector3.up, 1))    // Top
                     InsertFaces(data.faceSets[0], ref faces);
 
-                if (!IsFaceOccluded(-Vector3.up))   // Bottom
+                if (!IsFaceOccluded(-Vector3.up, 1))   // Bottom
                     InsertFaces(data.faceSets[1], ref faces);
 
                 InsertFaces(data.faceSets[6], ref faces);  // Omni

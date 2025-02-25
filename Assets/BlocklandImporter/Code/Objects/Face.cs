@@ -42,6 +42,11 @@ namespace Blockland.Objects
             Vector3 leftEdge = (this[2].position - this[3].position).normalized;
             Vector3 rightEdge = (this[0].position - this[1].position).normalized;
 
+            if (bottomEdge.sqrMagnitude < float.Epsilon) return false;
+            if (topEdge.sqrMagnitude < float.Epsilon) return false;
+            if (leftEdge.sqrMagnitude < float.Epsilon) return false;
+            if (rightEdge.sqrMagnitude < float.Epsilon) return false;
+
             if (Mathf.Abs(Vector3.Dot(bottomEdge, topEdge)) != 1.0f)
                 return false;
 
@@ -52,6 +57,25 @@ namespace Blockland.Objects
                 return false;
 
             return true;
+        }
+        public Color AveragedColor()
+        {
+            if (colorOverride) return color;
+
+            return (a.color + b.color + c.color + d.color) / 4.0f;
+        }
+        public void SetPosition(int index, Vector3 pos)
+        {
+            index = index % 4;
+
+            if (index == 0)
+                a.position = pos;
+            else if (index == 1)
+                b.position = pos;
+            else if (index == 2)
+                c.position = pos;
+            else if (index == 3)
+                d.position = pos;
         }
     }
 }

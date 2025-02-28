@@ -1,4 +1,6 @@
-﻿namespace Blockland.Objects
+﻿using Blockland.Meshing;
+
+namespace Blockland.Objects
 {
     [System.Serializable]
     public class FaceSet

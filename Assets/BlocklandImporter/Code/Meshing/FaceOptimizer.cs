@@ -70,229 +70,96 @@ namespace Blockland.Meshing
                 }
             }
         }
-        public struct Edge : IEqualityComparer<Edge>
+        public static bool TryMergeFaces(in Face a, in Face b, in Edge sharedEdge, out Face mergedFace)
         {
-            public Vector3 this[int i]
-            {
-                get
-                {
-                    if (i % 2 == 0)
-                        return a;
-                    else
-                        return b;
-                }
-                set
-                {
-                    if (i % 2 == 0)
-                    {
-                        a = value;
-                    }
-                    else b = value;
-                }
-            }
-            public float Length => (a - b).magnitude;
-            public Vector3 Direction => (b - a).normalized;
-            public Vector3 a;
-            public Vector3 b;
-            public Side side;
-            public Edge(Vector3 a, Vector3 b, Side type)
-            {
-                this.a = a;
-                this.b = b;
-                this.side = type;
-            }
-            public bool ContainsPoint(Vector3 c)
-            {
-                return c == a || c == b;
-            }
-            static public IEnumerable<Edge> GetEdges(Face face)
-            {
-                yield return FromFace(face, Side.Bottom);
-                yield return FromFace(face, Side.Left);
-                yield return FromFace(face, Side.Right);
-                yield return FromFace(face, Side.Top);
-            }
-            static public Edge FromFace(Face face, Side type)
-            {
-                switch (type)
-                {
-                    case Side.Bottom:
-                        return new Edge(face[1].position, face[2].position, type);
-                    case Side.Left:
-                        return new Edge(face[2].position, face[3].position, type);
-                    case Side.Right:
-                        return new Edge(face[1].position, face[0].position, type);
-                    case Side.Top:
-                        return new Edge(face[3].position, face[0].position, type);
-                }
+            mergedFace = default;
+            // Skip faces that have non-mergeable values
+            if (a.texture != b.texture) return false;
+            if (a.colorOverride != b.colorOverride) return false;
+            if (a.colorOverride && b.colorOverride)
+                if (a.color != b.color) return false;
+            if (a.AveragedColor() != b.AveragedColor()) return false;
+            if (!a.IsOrth() || !b.IsOrth()) return false;
 
-                return default;
-            }
-            static public Side GetAdjacentSide(Side type)
-            {
-                if (type == Side.Bottom || type == Side.Top)
-                    return Side.Left;
-                if (type == Side.Left || type == Side.Right)
-                    return Side.Top;
+            // Faces are both rectangular at this point
 
-                return default;
-            }
-            static public Side GetOppositeSide(Side type)
-            {
-                if (type == Side.Bottom) return Side.Top;
-                if (type == Side.Top) return Side.Bottom;
-                if (type == Side.Right) return Side.Left;
-                if (type == Side.Left) return Side.Right;
+            // Get the side of each face that's the shared edge
+            Side faceASharedSide = a.GetSideOfEdge(sharedEdge);
+            Side faceBSharedSide = b.GetSideOfEdge(sharedEdge);
 
-                return default;
-            }
-            static public void GetIndices(Side side, out int a, out int b)
-            {
-                if (side == Side.Bottom)
-                {
-                    a = 1;
-                    b = 2;
-                    return;
-                }
-                if (side == Side.Top)
-                {
-                    a = 0;
-                    b = 3;
-                    return;
-                }
-                if (side == Side.Left)
-                {
-                    a = 2;
-                    b = 3;
-                    return;
-                }
-                if (side == Side.Right)
-                {
-                    a = 0;
-                    b = 1;
-                    return;
-                }
+            if (!Edge.AreOpposite(faceASharedSide, faceBSharedSide)) return false;  // Necessary check for correctly merging UVs
 
-                a = 0;
-                b = 0;
-                return;
-            }
-            public bool Equals(Edge a, Edge b)
-            {
-                if (Compare(a.a, b.a) && Compare(a.b, b.b)) return true;
-                if (Compare(a.a, b.b) && Compare(a.b, b.a)) return true;
+            // Get the two indices of face B's edges that are making the new face
+            int topBIndex = GetOtherFaceIndexFromSharedEdgeVertex(in b, sharedEdge.a, faceBSharedSide, out Side topBSide);
+            int bottomBIndex = GetOtherFaceIndexFromSharedEdgeVertex(in b, sharedEdge.b, faceBSharedSide, out Side bottomBSide);
 
+            if (topBIndex == -1 || bottomBIndex == -1)
                 return false;
-            }
-            public int GetHashCode(Edge obj)
-            {
-                return obj.a.GetHashCode() + obj.b.GetHashCode();
-            }
-            public static bool Compare(Vector3 a, Vector3 b)
-            {
-                return (a - b).magnitude <= float.Epsilon;
-            }
-            public static Side GetSideOfEdge(Face face, Edge edge)
-            {
-                if (edge.Equals(FromFace(face, Side.Left), edge)) return Side.Left;
-                if (edge.Equals(FromFace(face, Side.Right), edge)) return Side.Right;
-                if (edge.Equals(FromFace(face, Side.Top), edge)) return Side.Top;
-                if (edge.Equals(FromFace(face, Side.Bottom), edge)) return Side.Bottom;
 
-                return default;
-            }
-            public static bool AreOpposite(Side a, Side b)
-            {
-                if (a == Side.Left && b == Side.Right) return true;
-                if (a == Side.Right && b == Side.Left) return true;
-                if (a == Side.Top && b == Side.Bottom) return true;
-                if (a == Side.Bottom && b == Side.Top) return true;
+            // transform face b's indices to face a's
+            Face.GetIndices(faceASharedSide, out int sharedATopIndex, out int sharedABottomIndex);
 
-                return false;
-            }
-            public static float GetLengthUVRatio(Face face, Side side)
-            {
-                GetIndices(side, out int a, out int b);
-                float worldLength = (face[a].position - face[b].position).magnitude;
-                float uvLength = (face[a].uv - face[b].uv).magnitude;
+            mergedFace = a;
+            bool orderCheck = a[sharedATopIndex].position == sharedEdge.a;
+            int mergedTopIndex = orderCheck ? topBIndex : bottomBIndex;
+            int mergedBottomIndex = orderCheck ? bottomBIndex : topBIndex;
 
-                return worldLength / uvLength;
-            }
-            public static void GetConnectingSides(Side side, out Side sideA, out Side sideB)
-            {
-                if (side == Side.Left)
-                {
-                    sideA = Side.Top;
-                    sideB = Side.Bottom;
-                    return;
-                }
-                if (side == Side.Right)
-                {
-                    sideA = Side.Top;
-                    sideB = Side.Bottom;
-                    return;
-                }
-                if (side == Side.Top)
-                {
-                    sideA = Side.Left;
-                    sideB = Side.Right;
-                    return;
-                }
-                if (side == Side.Bottom)
-                {
-                    sideA = Side.Left;
-                    sideB = Side.Right;
-                    return;
-                }
+            mergedFace.SetPosition(sharedATopIndex, b[mergedTopIndex].position);
+            mergedFace.SetPosition(sharedABottomIndex, b[mergedBottomIndex].position);
 
-                sideA = default;
-                sideB = default;
-            }
-            public static bool IsParallel(Edge a, Edge b)
-            {
-                return 1.0f - Mathf.Abs(Vector3.Dot(a.Direction, b.Direction)) <= float.Epsilon;
-            }
-            public static bool IsPerpendicular(Edge a, Edge b)
-            {
-                return Mathf.Abs(Vector3.Dot(a.Direction, b.Direction)) <= float.Epsilon;
-            }
-            public static int IndexOf(Face face, Vector3 point)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    if (face[i].position == point)
-                        return i;
-                }
+            // Adjust uvs
+            // Ensure the world length and uv lengths of both faces are the same ratios
+            // only check one edge of each because they are square
+            Edge aEdge = a.GetEdge(Edge.GetAdjacentSide(faceASharedSide));
+            Edge bEdge = b.GetEdge(Edge.GetAdjacentSide(faceBSharedSide));
 
-                return 0;
-            }
-            public static int GetOtherFaceIndexFromSharedEdgeVertex(ref Face face, Vector3 sharedVertex, Side mySide, out Side otherSide)
+            Face.GetIndices(Edge.GetAdjacentSide(faceASharedSide), out int aUVFaceIndex0, out int aUVFaceIndex1);
+            Face.GetIndices(Edge.GetAdjacentSide(faceBSharedSide), out int bUVFaceIndex0, out int bUVFaceIndex1);
+
+            float bFaceUVLength = (b[bUVFaceIndex0].uv - b[bUVFaceIndex1].uv).magnitude;
+
+            float aUVRatio = aEdge.Length / (a[aUVFaceIndex0].uv - a[aUVFaceIndex1].uv).magnitude;
+            float bUVRatio = bEdge.Length / bFaceUVLength;
+            if (Mathf.Abs(aUVRatio - bUVRatio) > 0.01f) return false;
+
+            // adjust UV length of merged face
+            Vector2 uvOffset = default;
+            switch (faceASharedSide)
             {
-                GetConnectingSides(mySide, out Side sideA, out Side sideB);
-
-                Edge.GetIndices(sideA, out int sideA_A, out int sideA_B);
-                otherSide = sideA;
-                if (face[sideA_A].position == sharedVertex)
-                    return sideA_B;
-                if (face[sideA_B].position == sharedVertex)
-                    return sideA_A;
-
-                otherSide = sideB;
-                Edge.GetIndices(sideB, out int sideB_A, out int sideB_B);
-                if (face[sideB_A].position == sharedVertex)
-                    return sideB_B;
-                if (face[sideB_B].position == sharedVertex)
-                    return sideB_A;
-
-                return -1;
+                case Side.Left:
+                    uvOffset = new Vector2(-bFaceUVLength, 0); break;
+                case Side.Right:
+                    uvOffset = new Vector2(bFaceUVLength, 0); break;
+                case Side.Top:
+                    uvOffset = new Vector2(0, bFaceUVLength); break;
+                case Side.Bottom:
+                    uvOffset = new Vector2(0, -bFaceUVLength); break;
             }
-            public enum Side
-            {
-                Top,
-                Bottom,
-                Left,
-                Right
-            }
+
+            mergedFace.SetUV(mergedTopIndex, a[sharedATopIndex].uv + uvOffset);
+            mergedFace.SetUV(mergedBottomIndex, a[sharedABottomIndex].uv + uvOffset);
+
+            return true;
+        }
+        public static int GetOtherFaceIndexFromSharedEdgeVertex(in Face face, Vector3 sharedVertex, Side mySide, out Side otherSide)
+        {
+            Edge.GetConnectingSides(mySide, out Side sideA, out Side sideB);
+
+            Face.GetIndices(sideA, out int sideA_A, out int sideA_B);
+            otherSide = sideA;
+            if (face[sideA_A].position == sharedVertex)
+                return sideA_B;
+            if (face[sideA_B].position == sharedVertex)
+                return sideA_A;
+
+            otherSide = sideB;
+            Face.GetIndices(sideB, out int sideB_A, out int sideB_B);
+            if (face[sideB_A].position == sharedVertex)
+                return sideB_B;
+            if (face[sideB_B].position == sharedVertex)
+                return sideB_A;
+
+            return -1;
         }
         public class FaceSet
         {
@@ -309,25 +176,27 @@ namespace Blockland.Meshing
                 for (int i = 0; i < faces.Count; i++)
                 {
                     Face face = faces[i];
-                    foreach (Edge edge in Edge.GetEdges(face))
+                    foreach (Side side in Face.GetSides())
                     {
+                        Edge edge = face.GetEdge(side);
                         if (edgeMap.TryGetValue(edge, out (int, int) pair))
                         {
                             // set other pair index
                             edgeMap[edge] = (pair.Item1, i);
-                            Face otherFace = faces[pair.Item1];
-                            // set first entry to be whichever face is either the bottom-most or left-most
-                            if (edge.side == Edge.Side.Left || edge.side == Edge.Side.Right)
-                            {
-                                if (Edge.FromFace(otherFace, edge.side).a.x > edge.a.x)
-                                    edgeMap[edge] = (i, pair.Item1);
-                            }
-                            
-                            if (edge.side == Edge.Side.Top || edge.side == Edge.Side.Bottom)
-                            {
-                                if (Edge.FromFace(otherFace, edge.side).a.y > edge.a.y)
-                                    edgeMap[edge] = (i, pair.Item1);
-                            }
+                            //Face otherFace = faces[pair.Item1];
+                            //Edge otherFaceEdge = otherFace.GetEdge(side);
+                            //// set first entry to be whichever face is either the bottom-most or left-most
+                            //if (side == Side.Left || side == Side.Right)
+                            //{
+                            //    if (otherFaceEdge.a.x > edge.a.x)
+                            //        edgeMap[edge] = (i, pair.Item1);
+                            //}
+
+                            //if (side == Side.Top || side == Side.Bottom)
+                            //{
+                            //    if (otherFaceEdge.a.y > edge.a.y)
+                            //        edgeMap[edge] = (i, pair.Item1);
+                            //}
                         }
                         else
                         {
@@ -368,63 +237,11 @@ namespace Blockland.Meshing
                         Face a = faces[pair.Item1];
                         Face b = faces[pair.Item2];
 
-                        // Skip faces that have non-mergeable values
-                        if (a.texture != b.texture) continue;
-                        if (a.colorOverride != b.colorOverride) continue;
-                        if (a.colorOverride && b.colorOverride)
-                            if (a.color != b.color) continue;
-
-                        if (a.AveragedColor() != b.AveragedColor()) continue;
-
-                        if (!a.IsOrth() || !b.IsOrth()) continue;
-
-                        // get face b's connecting edges of shared edge
-                        // check if perp to shared edge
-                        // check if parallel to face a's connected edges
-                        // check if perp to shared edge
-
-                        Edge.Side faceASharedSide = Edge.GetSideOfEdge(a, edge);
-                        Edge.Side faceBSharedSide = Edge.GetSideOfEdge(b, edge);
-
-                        Edge.GetConnectingSides(faceASharedSide, out Edge.Side faceAConnectedSideA, out Edge.Side faceAConnectedSideB);
-                        Edge.GetConnectingSides(faceBSharedSide, out Edge.Side faceBConnectedSideA, out Edge.Side faceBConnectedSideB);
-
-                        //// orthogonal checks
-                        //if (!Edge.IsParallel(Edge.FromFace(a, faceAConnectedSideA), Edge.FromFace(b, faceBConnectedSideA)) ||
-                        //    !Edge.IsParallel(Edge.FromFace(a, faceAConnectedSideB), Edge.FromFace(b, faceBConnectedSideB)) ||
-                        //    !Edge.IsPerpendicular(Edge.FromFace(a, faceAConnectedSideB), Edge.FromFace(b, faceBConnectedSideA)))
-                        //    continue;
-
-                        // todo - check if rectangle (opposite sides parallel)
-
-                        // for a given point on the shared edge, get the two points that are colinear with it from each face's opposite edge
-                        //int topAIndex = Edge.GetOtherFaceIndexFromSharedEdgeVertex(ref a, edge.a, faceASharedSide, out Edge.Side topASide);
-                        int topBIndex = Edge.GetOtherFaceIndexFromSharedEdgeVertex(ref b, edge.a, faceBSharedSide, out Edge.Side topBSide);
-                        //int bottomAIndex = Edge.GetOtherFaceIndexFromSharedEdgeVertex(ref a, edge.b, faceASharedSide, out Edge.Side bottomASide);
-                        int bottomBIndex = Edge.GetOtherFaceIndexFromSharedEdgeVertex(ref b, edge.b, faceBSharedSide, out Edge.Side bottomBSide);
-
-                        if (topBIndex == -1 || bottomBIndex == -1)
+                        // check if UVs can tile
+                        if (TryMergeFaces(in a, in b, in edge, out Face mergedFace) == false)
                             continue;
 
-                        // transform face b's indices to face a's
-
-                        Edge.GetIndices(faceASharedSide, out int sharedATopIndex, out int sharedABottomIndex);
-
-                        Face newFace = a;
-
-                        if (a[sharedATopIndex].position == edge.a)
-                        {
-                            newFace.SetPosition(sharedATopIndex, b[topBIndex].position);
-                            newFace.SetPosition(sharedABottomIndex, b[bottomBIndex].position);
-                        }
-                        else
-                        {
-                            newFace.SetPosition(sharedATopIndex, b[bottomBIndex].position);
-                            newFace.SetPosition(sharedABottomIndex, b[topBIndex].position);
-                        }
-                        // check if UVs can tile
-
-                        newMergedFaces.Add(newFace);
+                        newMergedFaces.Add(mergedFace);
                         remainingFaces.Remove(pair.Item1);
                         remainingFaces.Remove(pair.Item2);
                     }
@@ -446,6 +263,127 @@ namespace Blockland.Meshing
                     CreateEdges();
                 }
             }
+        }
+    }
+    public enum Side
+    {
+        Top,
+        Bottom,
+        Left,
+        Right
+    }
+    public struct Edge : IEqualityComparer<Edge>
+    {
+        public Vector3 this[int i]
+        {
+            get
+            {
+                if (i % 2 == 0)
+                    return a;
+                else
+                    return b;
+            }
+            set
+            {
+                if (i % 2 == 0)
+                {
+                    a = value;
+                }
+                else b = value;
+            }
+        }
+        public float Length => (a - b).magnitude;
+        public Vector3 Direction => (b - a).normalized;
+        public Vector3 a;
+        public Vector3 b;
+        public Edge(Vector3 a, Vector3 b)
+        {
+            this.a = a;
+            this.b = b;
+        }
+        public bool ContainsPoint(Vector3 c)
+        {
+            return c == a || c == b;
+        }
+        static public Side GetAdjacentSide(Side type)
+        {
+            if (type == Side.Bottom || type == Side.Top)
+                return Side.Left;
+            if (type == Side.Left || type == Side.Right)
+                return Side.Top;
+
+            return default;
+        }
+        static public Side GetOppositeSide(Side type)
+        {
+            if (type == Side.Bottom) return Side.Top;
+            if (type == Side.Top) return Side.Bottom;
+            if (type == Side.Right) return Side.Left;
+            if (type == Side.Left) return Side.Right;
+
+            return default;
+        }
+        public bool Equals(Edge a, Edge b)
+        {
+            if (Compare(a.a, b.a) && Compare(a.b, b.b)) return true;
+            if (Compare(a.a, b.b) && Compare(a.b, b.a)) return true;
+
+            return false;
+        }
+        public int GetHashCode(Edge obj)
+        {
+            return obj.a.GetHashCode() + obj.b.GetHashCode();
+        }
+        public static bool AreOpposite(Side a, Side b)
+        {
+            if (a == Side.Left && b == Side.Right) return true;
+            if (a == Side.Right && b == Side.Left) return true;
+            if (a == Side.Top && b == Side.Bottom) return true;
+            if (a == Side.Bottom && b == Side.Top) return true;
+
+            return false;
+        }
+        public static void GetConnectingSides(Side side, out Side sideA, out Side sideB)
+        {
+            if (side == Side.Left)
+            {
+                sideA = Side.Top;
+                sideB = Side.Bottom;
+                return;
+            }
+            if (side == Side.Right)
+            {
+                sideA = Side.Top;
+                sideB = Side.Bottom;
+                return;
+            }
+            if (side == Side.Top)
+            {
+                sideA = Side.Left;
+                sideB = Side.Right;
+                return;
+            }
+            if (side == Side.Bottom)
+            {
+                sideA = Side.Left;
+                sideB = Side.Right;
+                return;
+            }
+
+            sideA = default;
+            sideB = default;
+        }
+        public static bool IsParallel(Edge a, Edge b)
+        {
+            return 1.0f - Mathf.Abs(Vector3.Dot(a.Direction, b.Direction)) <= float.Epsilon;
+        }
+        public static bool IsPerpendicular(Edge a, Edge b)
+        {
+            return Mathf.Abs(Vector3.Dot(a.Direction, b.Direction)) <= float.Epsilon;
+        }
+        public static bool Compare(Vector3 a, Vector3 b)
+        {
+            return (a - b).magnitude <= float.Epsilon;
         }
     }
 }

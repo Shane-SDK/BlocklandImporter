@@ -12,13 +12,13 @@ namespace Blockland.Editor
     [ScriptedImporter(0, "bls")]
     public class SaveImporter : ScriptedImporter
     {
-        public int maxIterations = 100;
         public bool mergeFaces = true;
+        public bool generateLightMapUVs = false;
         public override void OnImportAsset(AssetImportContext ctx)
         {
             using FileStream file = System.IO.File.OpenRead(ctx.assetPath);
             Reader reader = new Reader(file);
-            UnityEngine.Profiling.Profiler.BeginSample("Read Save");
+            UnityEngine.Profiling.Profiler.BeginSample("Create SaveData");
             SaveData save = SaveData.CreateFromReader(reader);
             save.name = System.IO.Path.GetFileNameWithoutExtension(ctx.assetPath);
             UnityEngine.Profiling.Profiler.EndSample();
@@ -29,20 +29,34 @@ namespace Blockland.Editor
             ctx.SetMainObject(root);
 
             // mesh builder
+            UnityEngine.Profiling.Profiler.BeginSample("GetFaces");
             MeshBuilder meshBuilder = new();
 
             List<Face> faces = new List<Face>();
             MeshBuilder.GetFaces(save.bricks, faces);
+            UnityEngine.Profiling.Profiler.EndSample();
 
             if (mergeFaces)
             {
+                UnityEngine.Profiling.Profiler.BeginSample("Optimize Faces");
                 List<Face> mergedFaces = new();
                 FaceOptimizer optimizer = new FaceOptimizer();
-                optimizer.OptimizeFaces(faces, mergedFaces, maxIterations);
+                optimizer.OptimizeFaces(faces, mergedFaces, (int)Mathf.Sqrt(save.bricks.Count));
                 faces = mergedFaces;
+                UnityEngine.Profiling.Profiler.EndSample();
             }
 
-            Mesh mesh = MeshBuilder.CreateMesh(faces, out TextureFace[] textureFaces);
+            UnityEngine.Profiling.Profiler.BeginSample("Create Mesh");
+            Mesh mesh = MeshBuilder.CreateMesh(faces, out TextureFace[] textureFaces, generateLightMapUVs);
+            UnityEngine.Profiling.Profiler.EndSample();
+
+            if (generateLightMapUVs)
+            {
+                UnityEngine.Profiling.Profiler.BeginSample("Create Lightmap UVs");
+                LightMapper.GenerateUVs(faces, out Vector2[] uvs);
+                mesh.SetUVs(1, uvs);
+                UnityEngine.Profiling.Profiler.EndSample();
+            }
 
             root.AddComponent<MeshFilter>().sharedMesh = mesh;
 

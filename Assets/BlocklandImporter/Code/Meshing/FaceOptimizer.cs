@@ -1,4 +1,3 @@
-using Blockland.Objects;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,20 +13,16 @@ namespace Blockland.Meshing
             // convert to 2D faces
             Dictionary<Plane, FaceSet> faceSets = new();
 
-            // Organize faces by plane, convert faces from world space to plane space
+            // Organize faces by plane
             for (int i = 0; i < input.Count; i++)
             {
                 Face face = input[i];
                 Plane plane = face.Plane;
-                if (plane.normal.sqrMagnitude == 0)  // Bad geometry, skip processing
+                if (!face.IsOrth() || plane.normal.sqrMagnitude == 0)  // Bad geometry, skip processing
                 {
                     output.Add(face);
                     continue;
                 }
-
-                //Quaternion rotation = Quaternion.Inverse(Quaternion.LookRotation(plane.normal));
-                //for (int v = 0; v < 4; v++)
-                //    face[v] = new FaceVertex { color = face[v].color, uv = face[v].uv, position = rotation * face[v].position };
 
                 // flatten positions using plane
                 if (!faceSets.TryGetValue(plane, out FaceSet set))
@@ -49,24 +44,9 @@ namespace Blockland.Meshing
             foreach (FaceSet set in faceSets.Values)
             {
                 Quaternion localToWorldRotation = Quaternion.LookRotation(set.plane.normal);
-                Vector3 PlaneToWorld(Vector3 local)
-                {
-                    return localToWorldRotation * local;
-                }
-                UnityEngine.Random.InitState(0);
-                Color color = UnityEngine.Random.ColorHSV();
                 foreach (Face face in set.faces)
                 {
-                    Face worldFace = face;
-                    for (int v = 0; v < 4; v++)
-                    {
-                        FaceVertex vertex = face[v];
-                        //vertex.color = color;
-                        //vertex.position = PlaneToWorld(vertex.position);
-                        worldFace[v] = vertex;
-                    }
-
-                    output.Add(worldFace);
+                    output.Add(face);
                 }
             }
         }
@@ -183,20 +163,6 @@ namespace Blockland.Meshing
                         {
                             // set other pair index
                             edgeMap[edge] = (pair.Item1, i);
-                            //Face otherFace = faces[pair.Item1];
-                            //Edge otherFaceEdge = otherFace.GetEdge(side);
-                            //// set first entry to be whichever face is either the bottom-most or left-most
-                            //if (side == Side.Left || side == Side.Right)
-                            //{
-                            //    if (otherFaceEdge.a.x > edge.a.x)
-                            //        edgeMap[edge] = (i, pair.Item1);
-                            //}
-
-                            //if (side == Side.Top || side == Side.Bottom)
-                            //{
-                            //    if (otherFaceEdge.a.y > edge.a.y)
-                            //        edgeMap[edge] = (i, pair.Item1);
-                            //}
                         }
                         else
                         {
@@ -263,127 +229,6 @@ namespace Blockland.Meshing
                     CreateEdges();
                 }
             }
-        }
-    }
-    public enum Side
-    {
-        Top,
-        Bottom,
-        Left,
-        Right
-    }
-    public struct Edge : IEqualityComparer<Edge>
-    {
-        public Vector3 this[int i]
-        {
-            get
-            {
-                if (i % 2 == 0)
-                    return a;
-                else
-                    return b;
-            }
-            set
-            {
-                if (i % 2 == 0)
-                {
-                    a = value;
-                }
-                else b = value;
-            }
-        }
-        public float Length => (a - b).magnitude;
-        public Vector3 Direction => (b - a).normalized;
-        public Vector3 a;
-        public Vector3 b;
-        public Edge(Vector3 a, Vector3 b)
-        {
-            this.a = a;
-            this.b = b;
-        }
-        public bool ContainsPoint(Vector3 c)
-        {
-            return c == a || c == b;
-        }
-        static public Side GetAdjacentSide(Side type)
-        {
-            if (type == Side.Bottom || type == Side.Top)
-                return Side.Left;
-            if (type == Side.Left || type == Side.Right)
-                return Side.Top;
-
-            return default;
-        }
-        static public Side GetOppositeSide(Side type)
-        {
-            if (type == Side.Bottom) return Side.Top;
-            if (type == Side.Top) return Side.Bottom;
-            if (type == Side.Right) return Side.Left;
-            if (type == Side.Left) return Side.Right;
-
-            return default;
-        }
-        public bool Equals(Edge a, Edge b)
-        {
-            if (Compare(a.a, b.a) && Compare(a.b, b.b)) return true;
-            if (Compare(a.a, b.b) && Compare(a.b, b.a)) return true;
-
-            return false;
-        }
-        public int GetHashCode(Edge obj)
-        {
-            return obj.a.GetHashCode() + obj.b.GetHashCode();
-        }
-        public static bool AreOpposite(Side a, Side b)
-        {
-            if (a == Side.Left && b == Side.Right) return true;
-            if (a == Side.Right && b == Side.Left) return true;
-            if (a == Side.Top && b == Side.Bottom) return true;
-            if (a == Side.Bottom && b == Side.Top) return true;
-
-            return false;
-        }
-        public static void GetConnectingSides(Side side, out Side sideA, out Side sideB)
-        {
-            if (side == Side.Left)
-            {
-                sideA = Side.Top;
-                sideB = Side.Bottom;
-                return;
-            }
-            if (side == Side.Right)
-            {
-                sideA = Side.Top;
-                sideB = Side.Bottom;
-                return;
-            }
-            if (side == Side.Top)
-            {
-                sideA = Side.Left;
-                sideB = Side.Right;
-                return;
-            }
-            if (side == Side.Bottom)
-            {
-                sideA = Side.Left;
-                sideB = Side.Right;
-                return;
-            }
-
-            sideA = default;
-            sideB = default;
-        }
-        public static bool IsParallel(Edge a, Edge b)
-        {
-            return 1.0f - Mathf.Abs(Vector3.Dot(a.Direction, b.Direction)) <= float.Epsilon;
-        }
-        public static bool IsPerpendicular(Edge a, Edge b)
-        {
-            return Mathf.Abs(Vector3.Dot(a.Direction, b.Direction)) <= float.Epsilon;
-        }
-        public static bool Compare(Vector3 a, Vector3 b)
-        {
-            return (a - b).magnitude <= float.Epsilon;
         }
     }
 }

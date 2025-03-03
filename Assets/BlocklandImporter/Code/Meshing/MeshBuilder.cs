@@ -16,27 +16,59 @@ namespace Blockland.Meshing
         };
         public static void GetFaces(IList<BrickInstance> bricks, IList<Face> faces)
         {
-            Dictionary<Vector3Int, int> partLookup = new Dictionary<Vector3Int, int>();
+            //Dictionary<Vector3Int, int> partLookup = new Dictionary<Vector3Int, int>();
+            //Octree.BoundsOctree<int> octree = new(1, System.Numerics.Vector3.Zero, 1, 1);
+            BoundsInt[] brickBounds = new BoundsInt[bricks.Count];
+            bool TryGetBounds(Vector3Int c, out int partIndex)
+            {
+                UnityEngine.Profiling.Profiler.BeginSample("TryGetBounds");
+                //int[] overlaps = octree.GetColliding(new Octree.BoundingBox(ToNumeric(c + Vector3.one / 2.0f), ToNumeric(Vector3.one)));
+
+                //if (overlaps.Length > 0)
+                //{
+                //    partIndex = overlaps[0];
+                //    return true;
+                //}
+
+                for (int i = 0; i < bricks.Count; i++)
+                {
+                    BoundsInt bounds = brickBounds[i];
+                    if (bounds.Contains(c))
+                    {
+                        partIndex = i;
+                        UnityEngine.Profiling.Profiler.EndSample();
+                        return true;
+                    }
+                }
+
+                partIndex = 0;
+                UnityEngine.Profiling.Profiler.EndSample();
+                return false;
+            }
+            UnityEngine.Profiling.Profiler.BeginSample("BrickBounds");
             for (int i = 0; i < bricks.Count; i++)
             {
                 BrickInstance instance = bricks[i];
                 instance.GetTransformedBounds(out BoundsInt bounds);
 
-                foreach (Vector3Int pos in bounds.allPositionsWithin)
-                {
-                    if (!partLookup.ContainsKey(pos))
-                    {
-                        partLookup.Add(pos, i);
-                    }
-                }
-            }
+                brickBounds[i] = bounds;
+                //octree.Add(i, new Octree.BoundingBox(ToNumeric(bounds.center), ToNumeric(bounds.size)));
 
+                //foreach (Vector3Int pos in bounds.allPositionsWithin)
+                //{
+                //    if (!partLookup.ContainsKey(pos))
+                //    {
+                //        partLookup.Add(pos, i);
+                //    }
+                //}
+            }
+            UnityEngine.Profiling.Profiler.EndSample();
             bool IsOccluding(Vector3Int occluderPoint, Vector3 occluderDirectionVector, Direction occluderDirection)
             {
                 // get reference to occluder brick using lookup
                 // transform??
 
-                if (!partLookup.TryGetValue(occluderPoint, out int brickIndex))
+                if (!TryGetBounds(occluderPoint, out int brickIndex))
                     return false;
 
                 BrickInstance instance = bricks[brickIndex];
@@ -48,7 +80,6 @@ namespace Blockland.Meshing
                 // get occluder point in local space
                 //Vector3 local = instance.InverseTransformPoint(occluderPoint);
             }
-
             for (int i = 0; i < bricks.Count; i++)
             {
                 BrickInstance instance = bricks[i];
@@ -58,6 +89,7 @@ namespace Blockland.Meshing
 
                 bool IsFaceOccluded(Vector3 direction, int axisIndex)
                 {
+                    UnityEngine.Profiling.Profiler.BeginSample("IsFaceOccluded");
                     direction = Quaternion.AngleAxis(instance.Angle, Vector3.up) * direction;
                     int transformedAxisIndex = axisIndex;
                     bool turn90 = instance.angle % 2 == 1;
@@ -65,14 +97,32 @@ namespace Blockland.Meshing
                         transformedAxisIndex = axisIndex == 0 ? 2 : 0;
 
                     BoundsInt overlapBounds = intBounds;
-                    overlapBounds.position += Vector3Int.RoundToInt(direction);
+                    Vector3Int displacement = Vector3Int.RoundToInt(direction);
+                    overlapBounds.position += displacement;
+                    bool positiveDirection = !float.IsNegative(displacement[transformedAxisIndex]);
+
+                    if (positiveDirection)
+                    {
+                        Vector3Int min = overlapBounds.min;
+                        min[transformedAxisIndex] = intBounds.max[transformedAxisIndex];
+                        overlapBounds.min = min;
+                    }
+                    else
+                    {
+                        Vector3Int max = overlapBounds.max;
+                        max[transformedAxisIndex] = intBounds.min[transformedAxisIndex];
+                        overlapBounds.max = max;
+                    }
 
                     foreach (Vector3Int pos in overlapBounds.allPositionsWithin)
                     {
-                        if (intBounds.Contains(pos)) continue;  // todo FIX THIS SHIT, USE SMARTER BOUNDS
+                        //if (intBounds.Contains(pos)) continue;  // todo FIX THIS SHIT, USE SMARTER BOUNDS
 
-                        if (!partLookup.TryGetValue(pos, out int partIndex))
+                        if (!TryGetBounds(pos, out int partIndex))
+                        {
+                            UnityEngine.Profiling.Profiler.EndSample();
                             return false;
+                        }
 
                         BrickInstance otherInstance = bricks[partIndex];
                         if (otherInstance.data == instance.data)
@@ -83,6 +133,7 @@ namespace Blockland.Meshing
                             {
                                 if (Mathf.DeltaAngle(otherInstance.Angle, instance.Angle) == 0.0f && instance.data.HasSymmetry(axisIndex))  // same orientation
                                 {
+                                    UnityEngine.Profiling.Profiler.EndSample();
                                     return true;
                                 }
                                 //else if (Mathf.DeltaAngle(otherInstance.Angle, instance.Angle) == 180.0f)  // opposite directions
@@ -92,13 +143,18 @@ namespace Blockland.Meshing
                             }
                         }
 
-                        if (!IsOccluding(pos, -direction, Direction.Backward))
+                        UnityEngine.Profiling.Profiler.BeginSample("IsOccluding");
+                        bool occluding = IsOccluding(pos, -direction, Direction.Backward);
+                        UnityEngine.Profiling.Profiler.EndSample();
+                        if (!occluding)
                         {
+                            UnityEngine.Profiling.Profiler.EndSample();
                             return false;
                         }
 
                     }
 
+                    UnityEngine.Profiling.Profiler.EndSample();
                     return true;
                 }
 
@@ -143,7 +199,7 @@ namespace Blockland.Meshing
                 InsertFaces(data.faceSets[6], ref faces);  // Omni
             }
         }
-        public static Mesh CreateMesh(ICollection<Face> faces, out TextureFace[] textureFaces)
+        public static Mesh CreateMesh(ICollection<Face> faces, out TextureFace[] textureFaces, bool createLightMapUVs = false)
         {
             SubMeshDescriptor[] descriptors;
             List<Vertex> vertices = new List<Vertex>();
@@ -226,9 +282,20 @@ namespace Blockland.Meshing
             mesh.RecalculateNormals();
             mesh.RecalculateTangents();
 
+//#if UNITY_EDITOR
+//            if (createLightMapUVs)
+//            {
+//                UnityEditor.Unwrapping.GenerateSecondaryUVSet(mesh);
+//            }
+//#endif
+
             mesh.UploadMeshData(true);
 
             return mesh;
+        }
+        public static System.Numerics.Vector3 ToNumeric(Vector3 c)
+        {
+            return new System.Numerics.Vector3(c.x, c.y, c.z);
         }
     }
     public struct Vertex

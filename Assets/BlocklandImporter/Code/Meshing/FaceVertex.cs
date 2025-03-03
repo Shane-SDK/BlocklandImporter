@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Blockland.Objects
+namespace Blockland.Meshing
 {
     [System.Serializable]
     public struct FaceVertex

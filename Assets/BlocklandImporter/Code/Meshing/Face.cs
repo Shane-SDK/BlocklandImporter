@@ -38,24 +38,23 @@ namespace Blockland.Meshing
         public Color color;
         public bool IsOrth()
         {
-            Vector3 bottomEdge = (this[1].position - this[2].position).normalized;
-            Vector3 topEdge = (this[0].position - this[3].position).normalized;
-
-            Vector3 leftEdge = (this[2].position - this[3].position).normalized;
-            Vector3 rightEdge = (this[0].position - this[1].position).normalized;
+            Vector3 bottomEdge = (this[1].position - this[2].position);
+            Vector3 topEdge = (this[0].position - this[3].position);
+            Vector3 leftEdge = (this[2].position - this[3].position);
+            Vector3 rightEdge = (this[0].position - this[1].position);
 
             if (bottomEdge.sqrMagnitude < float.Epsilon) return false;
             if (topEdge.sqrMagnitude < float.Epsilon) return false;
             if (leftEdge.sqrMagnitude < float.Epsilon) return false;
             if (rightEdge.sqrMagnitude < float.Epsilon) return false;
 
-            if (Mathf.Abs(Vector3.Dot(bottomEdge, topEdge)) != 1.0f)
+            if (Mathf.Abs(Vector3.Dot(bottomEdge.normalized, topEdge.normalized)) != 1.0f)
                 return false;
 
-            if (Mathf.Abs(Vector3.Dot(leftEdge, rightEdge)) != 1.0f)
+            if (Mathf.Abs(Vector3.Dot(leftEdge.normalized, rightEdge.normalized)) != 1.0f)
                 return false;
 
-            if (Mathf.Abs(Vector3.Dot(leftEdge, bottomEdge)) != 0.0f)
+            if (Mathf.Abs(Vector3.Dot(leftEdge.normalized, bottomEdge.normalized)) != 0.0f)
                 return false;
 
             return true;
@@ -124,6 +123,26 @@ namespace Blockland.Meshing
             yield return GetEdge(Side.Left);
             yield return GetEdge(Side.Right);
             yield return GetEdge(Side.Top);
+        }
+        public int ValidEdgeCount()
+        {
+            int edges = 0;
+
+            Vector3 bottomEdge = (this[1].position - this[2].position);
+            Vector3 topEdge = (this[0].position - this[3].position);
+            Vector3 leftEdge = (this[2].position - this[3].position);
+            Vector3 rightEdge = (this[0].position - this[1].position);
+
+            if (bottomEdge.magnitude > float.Epsilon)
+                edges++;
+            if (topEdge.magnitude > float.Epsilon)
+                edges++;
+            if (leftEdge.magnitude > float.Epsilon)
+                edges++;
+            if (rightEdge.magnitude > float.Epsilon)
+                edges++;
+
+            return edges;
         }
         static public void GetIndices(Side side, out int a, out int b)
         {

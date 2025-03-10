@@ -23,7 +23,6 @@ namespace Blockland.Editor
             save.name = System.IO.Path.GetFileNameWithoutExtension(ctx.assetPath);
             UnityEngine.Profiling.Profiler.EndSample();
 
-            UnityEngine.Profiling.Profiler.BeginSample("Asset Creation");
             GameObject root = new();
             ctx.AddObjectToAsset("root", root);
             ctx.SetMainObject(root);

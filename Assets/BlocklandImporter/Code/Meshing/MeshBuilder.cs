@@ -14,151 +14,42 @@ namespace Blockland.Meshing
             new VertexAttributeDescriptor( VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4 ),
             new VertexAttributeDescriptor( VertexAttribute.TexCoord0, VertexAttributeFormat.Float32, 2 ),
         };
+        static public readonly int[] faceTransformations = new int[]
+        {
+            0, 1, 2, 3, 4, 5,
+            5, 4, 2, 3, 0, 1,
+            1, 0, 2, 3, 5, 4,
+            4, 5, 2, 3, 1, 0,
+        };
+        static public readonly int[] axisToFaceSetDirection = new[]
+        {
+            3, 5,   // +X, -X
+            0, 1,   // +Y, -Y
+            2, 4    // +Z, -Z
+        };
         public static void GetFaces(IList<BrickInstance> bricks, IList<Face> faces)
         {
-            //Dictionary<Vector3Int, int> partLookup = new Dictionary<Vector3Int, int>();
-            //Octree.BoundsOctree<int> octree = new(1, System.Numerics.Vector3.Zero, 1, 1);
             BoundsInt[] brickBounds = new BoundsInt[bricks.Count];
-            bool TryGetBounds(Vector3Int c, out int partIndex)
-            {
-                UnityEngine.Profiling.Profiler.BeginSample("TryGetBounds");
-                //int[] overlaps = octree.GetColliding(new Octree.BoundingBox(ToNumeric(c + Vector3.one / 2.0f), ToNumeric(Vector3.one)));
 
-                //if (overlaps.Length > 0)
-                //{
-                //    partIndex = overlaps[0];
-                //    return true;
-                //}
-
-                for (int i = 0; i < bricks.Count; i++)
-                {
-                    BoundsInt bounds = brickBounds[i];
-                    if (bounds.Contains(c))
-                    {
-                        partIndex = i;
-                        UnityEngine.Profiling.Profiler.EndSample();
-                        return true;
-                    }
-                }
-
-                partIndex = 0;
-                UnityEngine.Profiling.Profiler.EndSample();
-                return false;
-            }
             UnityEngine.Profiling.Profiler.BeginSample("BrickBounds");
             for (int i = 0; i < bricks.Count; i++)
             {
                 BrickInstance instance = bricks[i];
                 instance.GetTransformedBounds(out BoundsInt bounds);
-
                 brickBounds[i] = bounds;
-                //octree.Add(i, new Octree.BoundingBox(ToNumeric(bounds.center), ToNumeric(bounds.size)));
-
-                //foreach (Vector3Int pos in bounds.allPositionsWithin)
-                //{
-                //    if (!partLookup.ContainsKey(pos))
-                //    {
-                //        partLookup.Add(pos, i);
-                //    }
-                //}
             }
             UnityEngine.Profiling.Profiler.EndSample();
-            bool IsOccluding(Vector3Int occluderPoint, Vector3 occluderDirectionVector, Direction occluderDirection)
-            {
-                // get reference to occluder brick using lookup
-                // transform??
 
-                if (!TryGetBounds(occluderPoint, out int brickIndex))
-                    return false;
+            UnityEngine.Profiling.Profiler.BeginSample("Create Occlusion Data");
+            new Occlusion.Occlusion().GetOcclusion(brickBounds, out byte[] occlusionFlags);
+            UnityEngine.Profiling.Profiler.EndSample();
 
-                BrickInstance instance = bricks[brickIndex];
-
-                if (instance.data.type == BrickType.Brick)  // bricks occlude from any point/direction
-                    return true;
-
-                return false;
-                // get occluder point in local space
-                //Vector3 local = instance.InverseTransformPoint(occluderPoint);
-            }
+            UnityEngine.Profiling.Profiler.BeginSample("Insert Faces");
             for (int i = 0; i < bricks.Count; i++)
             {
                 BrickInstance instance = bricks[i];
-
-                instance.GetTransformedBounds(out Bounds bounds);
-                instance.GetTransformedBounds(out BoundsInt intBounds);
-
-                bool IsFaceOccluded(Vector3 direction, int axisIndex)
-                {
-                    UnityEngine.Profiling.Profiler.BeginSample("IsFaceOccluded");
-                    direction = Quaternion.AngleAxis(instance.Angle, Vector3.up) * direction;
-                    int transformedAxisIndex = axisIndex;
-                    bool turn90 = instance.angle % 2 == 1;
-                    if (turn90 && axisIndex != 1)
-                        transformedAxisIndex = axisIndex == 0 ? 2 : 0;
-
-                    BoundsInt overlapBounds = intBounds;
-                    Vector3Int displacement = Vector3Int.RoundToInt(direction);
-                    overlapBounds.position += displacement;
-                    bool positiveDirection = !float.IsNegative(displacement[transformedAxisIndex]);
-
-                    if (positiveDirection)
-                    {
-                        Vector3Int min = overlapBounds.min;
-                        min[transformedAxisIndex] = intBounds.max[transformedAxisIndex];
-                        overlapBounds.min = min;
-                    }
-                    else
-                    {
-                        Vector3Int max = overlapBounds.max;
-                        max[transformedAxisIndex] = intBounds.min[transformedAxisIndex];
-                        overlapBounds.max = max;
-                    }
-
-                    foreach (Vector3Int pos in overlapBounds.allPositionsWithin)
-                    {
-                        //if (intBounds.Contains(pos)) continue;  // todo FIX THIS SHIT, USE SMARTER BOUNDS
-
-                        if (!TryGetBounds(pos, out int partIndex))
-                        {
-                            UnityEngine.Profiling.Profiler.EndSample();
-                            return false;
-                        }
-
-                        BrickInstance otherInstance = bricks[partIndex];
-                        if (otherInstance.data == instance.data)
-                        {
-                            Vector3 difference = otherInstance.position - instance.position;
-                            difference[transformedAxisIndex] = 0;
-                            if (difference.sqrMagnitude == 0.0f)  // only test for aligned bricks
-                            {
-                                if (Mathf.DeltaAngle(otherInstance.Angle, instance.Angle) == 0.0f && instance.data.HasSymmetry(axisIndex))  // same orientation
-                                {
-                                    UnityEngine.Profiling.Profiler.EndSample();
-                                    return true;
-                                }
-                                //else if (Mathf.DeltaAngle(otherInstance.Angle, instance.Angle) == 180.0f)  // opposite directions
-                                //{
-                                //    return true;
-                                //}
-                            }
-                        }
-
-                        UnityEngine.Profiling.Profiler.BeginSample("IsOccluding");
-                        bool occluding = IsOccluding(pos, -direction, Direction.Backward);
-                        UnityEngine.Profiling.Profiler.EndSample();
-                        if (!occluding)
-                        {
-                            UnityEngine.Profiling.Profiler.EndSample();
-                            return false;
-                        }
-
-                    }
-
-                    UnityEngine.Profiling.Profiler.EndSample();
-                    return true;
-                }
-
                 BrickData data = instance.data;
+
                 void InsertFaces(FaceSet faceSet, ref IList<Face> faces)
                 {
                     foreach (Face face in faceSet.faces)
@@ -178,26 +69,21 @@ namespace Blockland.Meshing
                     }
                 }
 
-                if (!IsFaceOccluded(Vector3.forward, 2))  // North / Front
-                    InsertFaces(data.faceSets[2], ref faces);
+                byte occlusionFlag = occlusionFlags[i];
 
-                if (!IsFaceOccluded(-Vector3.forward, 2))   // South / Back
-                    InsertFaces(data.faceSets[4], ref faces);
+                for (int n = 0; n < 6; n++)
+                {
+                    int worldDirection = faceTransformations[(instance.angle % 4) * 6 + n];
+                    byte mask = (byte)(1 << worldDirection);
+                    bool occlude = (mask & occlusionFlag) == mask;
+                    if (!occlude)
+                        InsertFaces(data.faceSets[axisToFaceSetDirection[n]], ref faces);
+                }
 
-                if (!IsFaceOccluded(Vector3.right, 0))    // East / Right
-                    InsertFaces(data.faceSets[3], ref faces);
-
-                if (!IsFaceOccluded(-Vector3.right, 0))     // West / Left
-                    InsertFaces(data.faceSets[5], ref faces);
-
-                if (!IsFaceOccluded(Vector3.up, 1))    // Top
-                    InsertFaces(data.faceSets[0], ref faces);
-
-                if (!IsFaceOccluded(-Vector3.up, 1))   // Bottom
-                    InsertFaces(data.faceSets[1], ref faces);
-
-                InsertFaces(data.faceSets[6], ref faces);  // Omni
+                if (occlusionFlag != (0x3F))
+                    InsertFaces(data.faceSets[6], ref faces);  // Omni
             }
+            UnityEngine.Profiling.Profiler.EndSample();
         }
         public static Mesh CreateMesh(ICollection<Face> faces, out TextureFace[] textureFaces, bool createLightMapUVs = false)
         {
@@ -296,6 +182,16 @@ namespace Blockland.Meshing
         public static System.Numerics.Vector3 ToNumeric(Vector3 c)
         {
             return new System.Numerics.Vector3(c.x, c.y, c.z);
+        }
+        public static bool Overlaps(ref BoundsInt a, ref BoundsInt b)
+        {
+            for (int c = 0; c < 3; c++)
+            {
+               if (a.min[c] >= b.max[c]) return false;
+               if (a.max[c] <= b.min[c]) return false;
+            }
+
+            return true;
         }
     }
     public struct Vertex

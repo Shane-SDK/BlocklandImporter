@@ -27,7 +27,7 @@ namespace Blockland.Meshing
                 // flatten positions using plane
                 if (!faceSets.TryGetValue(plane, out FaceSet set))
                 {
-                    set = new FaceSet(plane);
+                    set = new FaceSet();
                     faceSets[plane] = set;
                 }
 
@@ -43,7 +43,6 @@ namespace Blockland.Meshing
 
             foreach (FaceSet set in faceSets.Values)
             {
-                Quaternion localToWorldRotation = Quaternion.LookRotation(set.plane.normal);
                 foreach (Face face in set.faces)
                 {
                     output.Add(face);
@@ -143,13 +142,8 @@ namespace Blockland.Meshing
         }
         public class FaceSet
         {
-            readonly public Plane plane;
             public List<Face> faces = new();
             public Dictionary<Edge, (int, int)> edgeMap = new(new Edge());
-            public FaceSet(Plane plane)
-            {
-                this.plane = plane;
-            }
             public void CreateEdges()
             {
                 edgeMap.Clear();

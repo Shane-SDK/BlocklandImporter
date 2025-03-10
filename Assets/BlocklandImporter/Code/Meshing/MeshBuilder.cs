@@ -27,7 +27,7 @@ namespace Blockland.Meshing
             0, 1,   // +Y, -Y
             2, 4    // +Z, -Z
         };
-        public static void GetFaces(IList<BrickInstance> bricks, IList<Face> faces)
+        public static void GetFaces(IList<BrickInstance> bricks, IList<Face> faces, bool centerOrigin = false)
         {
             BoundsInt[] brickBounds = new BoundsInt[bricks.Count];
 
@@ -84,6 +84,34 @@ namespace Blockland.Meshing
                     InsertFaces(data.faceSets[6], ref faces);  // Omni
             }
             UnityEngine.Profiling.Profiler.EndSample();
+
+            if (centerOrigin)
+            {
+                Vector3 min = Vector3.one * float.MaxValue;
+                Vector3 max = Vector3.one * float.MinValue;
+
+                for (int i = 0; i < brickBounds.Length; i++)
+                {
+                    BoundsInt bounds = brickBounds[i];
+                    min = Vector3.Min(bounds.min, min);
+                    max = Vector3.Max(bounds.max, max);
+                }
+
+                Vector3 origin = Vector3Int.FloorToInt((max + min) / 2.0f);
+                origin.y = 0;
+                origin = Blockland.StudsToUnity(origin);
+
+                // transform all faces to origin
+                for (int i = 0; i < faces.Count; i++)
+                {
+                    Face face = faces[i];
+                    for (int v = 0; v < 4; v++)
+                    {
+                        face.SetPosition(v, face[v].position - origin);
+                    }
+                    faces[i] = face;
+                }
+            }
         }
         public static Mesh CreateMesh(ICollection<Face> faces, out TextureFace[] textureFaces, bool createLightMapUVs = false)
         {

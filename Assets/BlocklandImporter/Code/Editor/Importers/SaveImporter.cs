@@ -12,6 +12,7 @@ namespace Blockland.Editor
     [ScriptedImporter(0, "bls")]
     public class SaveImporter : ScriptedImporter
     {
+        public bool centerOrigin = false;
         public bool mergeFaces = true;
         public bool generateLightMapUVs = false;
         public override void OnImportAsset(AssetImportContext ctx)
@@ -32,7 +33,7 @@ namespace Blockland.Editor
             MeshBuilder meshBuilder = new();
 
             List<Face> faces = new List<Face>();
-            MeshBuilder.GetFaces(save.bricks, faces);
+            MeshBuilder.GetFaces(save.bricks, faces, centerOrigin);
             UnityEngine.Profiling.Profiler.EndSample();
 
             if (mergeFaces)

@@ -38,6 +38,7 @@ namespace Octree
     /// <typeparam name="T">The content of the octree can be anything, since the bounds data is supplied separately.</typeparam>
     public partial class BoundsOctree<T>
     {
+        public Node Root => _rootNode;
         /// <summary>
         /// Root node of the octree
         /// </summary>

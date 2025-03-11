@@ -9,11 +9,14 @@ namespace Blockland.Objects
 {
     public class SaveData : ScriptableObject
     {
+        public BoundsInt bounds;
         public Color[] colorMap = new Color[64];
         public List<BrickInstance> bricks = new List<BrickInstance>();
         public static SaveData CreateFromReader(Reader reader)
         {
             SaveData saveData = ScriptableObject.CreateInstance<SaveData>();
+            Vector3Int min = Vector3Int.one * int.MaxValue;
+            Vector3Int max = Vector3Int.one * int.MinValue;
             reader.ReadLine();  // skip first line
 
             // Read description
@@ -69,8 +72,12 @@ namespace Blockland.Objects
                     int colorIndex = reader.ParseLineInt(5);
 
                     byte angle = (byte)Mathf.RoundToInt(reader.ParseLineFloat(3));
+                    BrickInstance instance = new BrickInstance { data = brickResource, position = position, angle = angle, color = saveData.colorMap[colorIndex] };
+                    saveData.bricks.Add(instance);
 
-                    saveData.bricks.Add(new BrickInstance { data = brickResource, position = position, angle = angle, color = saveData.colorMap[colorIndex] });
+                    instance.GetTransformedBounds(out BoundsInt bounds);
+                    min = Vector3Int.Min(min, bounds.min);
+                    max = Vector3Int.Max(max, bounds.max);
                 }
                 else
                 {
@@ -78,6 +85,9 @@ namespace Blockland.Objects
                 }
 
             }
+
+            Vector3Int boundsSize = max - min;
+            saveData.bounds = new BoundsInt(min.x, min.y, min.z, boundsSize.x, boundsSize.y, boundsSize.z);
 
             return saveData;
         }

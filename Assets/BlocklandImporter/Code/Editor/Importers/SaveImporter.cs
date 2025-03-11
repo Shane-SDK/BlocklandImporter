@@ -6,6 +6,7 @@ using UnityEngine.Rendering;
 using Blockland.Objects;
 using Blockland.Meshing;
 using System.Collections;
+using Octree;
 
 namespace Blockland.Editor
 {
@@ -23,6 +24,19 @@ namespace Blockland.Editor
             SaveData save = SaveData.CreateFromReader(reader);
             save.name = System.IO.Path.GetFileNameWithoutExtension(ctx.assetPath);
             UnityEngine.Profiling.Profiler.EndSample();
+
+            BoundsInt saveBounds = save.bounds;
+            int size = Mathf.Max(saveBounds.size.x, saveBounds.size.y, saveBounds.size.z);
+
+            Octree.BoundsOctree<int> brickTree = new Octree.BoundsOctree<int>(size, Extensions.Vec3(saveBounds.center), 1, 1.2f);
+            for (int i = 0; i < save.bricks.Count; i++)
+            {
+                save.bricks[i].GetTransformedBounds(out BoundsInt bounds);
+                Octree.BoundingBox box = new Octree.BoundingBox(Extensions.Vec3(bounds.center), Extensions.Vec3(bounds.size));
+                brickTree.Add(i, box);
+            }
+
+            Extensions.DrawOctree(brickTree, new Color(1, 0, 0, 0.1f), Color.cyan, 10);
 
             GameObject root = new();
             ctx.AddObjectToAsset("root", root);

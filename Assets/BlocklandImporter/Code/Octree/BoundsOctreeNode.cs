@@ -10,6 +10,7 @@ namespace Octree
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Numerics;
 
     public partial class BoundsOctree<T>
@@ -17,8 +18,23 @@ namespace Octree
         /// <summary>
         /// A node in a BoundsOctree
         /// </summary>
-        private class Node
+        public class Node
         {
+            public IEnumerable<Node> Children
+            {
+                get
+                {
+                    if (_children == null)
+                        yield break;
+
+                    for (int i = 0; i < _children.Length; i++)
+                    {
+                        if (_children[i] != null)
+                            yield return _children[i];
+                    }
+                }
+            }
+            public IReadOnlyList<OctreeObject> Objects => _objects;
             /// <summary>
             /// Centre of this node
             /// </summary>
@@ -83,7 +99,7 @@ namespace Octree
             /// <summary>
             /// An object in the octree
             /// </summary>
-            private class OctreeObject
+            public class OctreeObject
             {
                 /// <summary>
                 /// Object content

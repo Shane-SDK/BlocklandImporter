@@ -159,7 +159,6 @@ namespace Blockland.Meshing.Occlusion
         }
         public int3 min;
         public int3 max;
-
         public bool Contains(int3 point)
         {
             if (point.x < min.x) return false;

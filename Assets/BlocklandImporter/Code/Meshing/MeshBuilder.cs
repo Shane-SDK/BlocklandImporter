@@ -246,7 +246,7 @@ namespace Blockland.Meshing
                     //    return false;
                     //}
 
-                    int lastUsedNeighborIndex = -1;
+                    int lastOccludingBrickIndex = -1;
                     UnityEngine.Profiling.Profiler.BeginSample("Bounding Box Iteration");
                     for (uint flattenedIndex = 0; flattenedIndex < area; flattenedIndex++)
                     {
@@ -260,14 +260,14 @@ namespace Blockland.Meshing
                         coordinate[upAxisComponent] = instanceBounds.min[upAxisComponent] + (int)up;
                         coordinate[flattenComponent] = extrudedPosition;
 
-                        bool foundBrick = false;
+                        bool isOccluding = false;
 
-                        if (lastUsedNeighborIndex != -1 && brickBounds[lastUsedNeighborIndex].Contains(coordinate))  // early escape
+                        if (lastOccludingBrickIndex != -1 && brickBounds[lastOccludingBrickIndex].Contains(coordinate))  // early escape
                         {
-                            foundBrick = true;
+                            isOccluding = true;
                         }
 
-                        if (!foundBrick)
+                        if (!isOccluding)
                         {
                             UnityEngine.Profiling.Profiler.BeginSample("Second Loop Iteration");
                             for (int n = 0; n < overlapIndices.Count; n++)
@@ -276,17 +276,26 @@ namespace Blockland.Meshing
                                 if (index == i) continue;
 
                                 BoundsInt neighbor = brickBounds[index];
-                                if (neighbor.Contains(coordinate))
+                                if (neighbor.Contains(coordinate))  // found neighbor next to brick's face
                                 {
-                                    lastUsedNeighborIndex = index;
-                                    foundBrick = true;
-                                    break;
+                                    // check if it can occlude
+                                    BrickData neighborData = bricks[index].data;
+                                    if (neighborData.type != BrickType.Special)
+                                    {
+                                        lastOccludingBrickIndex = index;
+                                        isOccluding = true;
+                                        break;
+                                    }
+                                    else  // neighbor cannot occlude
+                                    {
+                                        lastOccludingBrickIndex = -1;
+                                    }
                                 }
                             }
                             UnityEngine.Profiling.Profiler.EndSample();
                         }
 
-                        if (!foundBrick)
+                        if (!isOccluding)
                         {
                             UnityEngine.Profiling.Profiler.EndSample();
                             return false;

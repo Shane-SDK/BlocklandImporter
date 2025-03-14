@@ -1,4 +1,5 @@
-﻿using Octree;
+﻿using Blockland.Objects;
+using Octree;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,6 +73,28 @@ namespace Blockland
                     Extensions.DrawBox(Extensions.Vec3(obj.Bounds.Center), Quaternion.identity, Extensions.Vec3(obj.Bounds.Size), objectColor, time);
                 }
             }
+        }
+        public static Octree.BoundingBox BoundingBox(Bounds bounds)
+        {
+            return new BoundingBox(Vec3(bounds.center), Vec3(bounds.size));
+        }
+        public static Bounds BoundingBox(BoundingBox bounds)
+        {
+            return new Bounds(Vec3(bounds.Center), Vec3(bounds.Size));
+        }
+        public static BoundsOctree<int> OctreeFromSave(SaveData save, float looseness = 1.2f)
+        {
+            // create octree
+            int treeSize = Mathf.Max(save.bounds.size.x, save.bounds.size.y, save.bounds.size.z);
+            Octree.BoundsOctree<int> brickTree = new Octree.BoundsOctree<int>(treeSize, Extensions.Vec3(save.bounds.center), 1, looseness);
+            for (int i = 0; i < save.bricks.Count; i++)
+            {
+                save.bricks[i].GetTransformedBounds(out BoundsInt instanceBounds);
+                Octree.BoundingBox box = new Octree.BoundingBox(Extensions.Vec3(instanceBounds.center), Extensions.Vec3(instanceBounds.size));
+                brickTree.Add(i, box);
+            }
+
+            return brickTree;
         }
     }
 }

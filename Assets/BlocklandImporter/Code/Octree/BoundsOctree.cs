@@ -199,11 +199,11 @@ namespace Octree
         /// <seealso cref="IsColliding(Octree.BoundingBox)"/>
         /// <param name="checkBounds">bounds to check.</param>
         /// <returns>Objects that intersect with the specified bounds.</returns>
-        public T[] GetColliding(BoundingBox checkBounds)
+        public List<T> GetColliding(BoundingBox checkBounds)
         {
             List<T> collidingWith = new List<T>();
             _rootNode.GetColliding(ref checkBounds, collidingWith);
-            return collidingWith.ToArray();
+            return collidingWith;
         }
 
         /// <summary>

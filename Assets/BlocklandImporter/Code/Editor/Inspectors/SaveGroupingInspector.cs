@@ -1,5 +1,7 @@
 ﻿using Blockland.Editor.Windows;
 using Blockland.Group;
+using Octree;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -10,11 +12,17 @@ namespace Blockland
     public class SaveGroupingInspector : UnityEditor.Editor
     {
         UnityEditor.IMGUI.Controls.BoxBoundsHandle handle;
+        BoundsOctree<int> octree;
+        SaveGrouping group;
         private void OnEnable()
         {
             SceneView.duringSceneGui += SceneGUI;
             handle = new UnityEditor.IMGUI.Controls.BoxBoundsHandle();
             handle.handleColor = Color.red;
+            group = target as SaveGrouping;
+            if (group.save == null) return;
+
+            octree = Extensions.OctreeFromSave(group.save);
         }
         private void OnDisable()
         {
@@ -22,7 +30,7 @@ namespace Blockland
         }
         public override void OnInspectorGUI()
         {
-            SaveGrouping saveGroup = (SaveGrouping)target;
+            serializedObject.Update();
             EditorGUILayout.PropertyField(serializedObject.FindProperty("save"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("groups"));
 
@@ -38,6 +46,7 @@ namespace Blockland
         }
         private void SceneGUI(SceneView view)
         {
+            serializedObject.Update();
             SerializedProperty property = serializedObject.FindProperty("groups");
             if (!property.isExpanded) return;
 
@@ -57,7 +66,14 @@ namespace Blockland
                     EditorGUI.BeginChangeCheck();
                     handle.DrawHandle();
                     Handles.color = Color.white;
-                    UnityEditor.Handles.Label(handle.center, group.name);
+                    int brickCount;
+
+                    if (octree != null)
+                        brickCount = saveGroup.GetBrickIndices(group, octree).Count();
+                    else
+                        brickCount = saveGroup.GetBrickIndices(group).Count();
+
+                    UnityEditor.Handles.Label(handle.center, $"{group.name} ({brickCount} bricks)");
                     if (EditorGUI.EndChangeCheck())
                     {
                         Undo.RecordObject(saveGroup, "Change Bounds");
@@ -67,6 +83,7 @@ namespace Blockland
 
                         group.volumes[i] = selection;
                         EditorUtility.SetDirty(this);
+                        serializedObject.ApplyModifiedProperties();
                     }
 
                     Vector3 center = Blockland.StudsToUnity(selection.bounds.center);
@@ -75,6 +92,9 @@ namespace Blockland
                     Handles.TransformHandle(ref center, Quaternion.identity, ref scale);
                     selection.bounds.center = Blockland.UnityToStuds(center);
                     selection.bounds.size = Blockland.UnityToStuds(scale);
+                    EditorUtility.SetDirty(this);
+                    serializedObject.ApplyModifiedProperties();
+
 
                     group.volumes[i] = selection;
                 }

@@ -69,8 +69,8 @@ namespace Blockland.Meshing
             if (!Edge.AreOpposite(faceASharedSide, faceBSharedSide)) return false;  // Necessary check for correctly merging UVs
 
             // Get the two indices of face B's edges that are making the new face
-            int topBIndex = GetOtherFaceIndexFromSharedEdgeVertex(in b, sharedEdge.a, faceBSharedSide, out Side topBSide);
-            int bottomBIndex = GetOtherFaceIndexFromSharedEdgeVertex(in b, sharedEdge.b, faceBSharedSide, out Side bottomBSide);
+            int topBIndex = GetOtherFaceIndexFromSharedEdgeVertex(in b, sharedEdge.a, faceBSharedSide, out _);
+            int bottomBIndex = GetOtherFaceIndexFromSharedEdgeVertex(in b, sharedEdge.b, faceBSharedSide, out _);
 
             if (topBIndex == -1 || bottomBIndex == -1)
                 return false;
@@ -167,16 +167,16 @@ namespace Blockland.Meshing
             }
             public void MergeFaces(int maxIterations)
             {
-                int iter = 0;
+                int iteration = 0;
                 while(true)
                 {
-                    if (iter >= maxIterations)
+                    if (iteration >= maxIterations)
                     {
                         //Debug.LogError($"Bad merging");
                         break;
                     }
 
-                    iter++;
+                    iteration++;
 
                     HashSet<int> remainingFaces = new HashSet<int>();
                     for (int i = 0; i < faces.Count; i++)

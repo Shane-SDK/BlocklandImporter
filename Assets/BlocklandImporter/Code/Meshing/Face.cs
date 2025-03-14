@@ -48,13 +48,13 @@ namespace Blockland.Meshing
             if (leftEdge.sqrMagnitude < float.Epsilon) return false;
             if (rightEdge.sqrMagnitude < float.Epsilon) return false;
 
-            if (Mathf.Abs(Vector3.Dot(bottomEdge.normalized, topEdge.normalized)) != 1.0f)
+            if (!Equal(Mathf.Abs(Vector3.Dot(bottomEdge.normalized, topEdge.normalized)), 1.0f))
                 return false;
 
-            if (Mathf.Abs(Vector3.Dot(leftEdge.normalized, rightEdge.normalized)) != 1.0f)
+            if (!Equal(Mathf.Abs(Vector3.Dot(leftEdge.normalized, rightEdge.normalized)), 1.0f))
                 return false;
 
-            if (Mathf.Abs(Vector3.Dot(leftEdge.normalized, bottomEdge.normalized)) != 0.0f)
+            if (!Equal(Mathf.Abs(Vector3.Dot(leftEdge.normalized, bottomEdge.normalized)), 0.0f))
                 return false;
 
             return true;
@@ -143,6 +143,10 @@ namespace Blockland.Meshing
                 edges++;
 
             return edges;
+        }
+        public static bool Equal(float a, float b)
+        {
+            return Mathf.Abs(a - b) <= float.Epsilon;
         }
         static public void GetIndices(Side side, out int a, out int b)
         {

@@ -13,6 +13,14 @@ namespace Blockland.Group
     {
         public SaveData save;
         public List<Group> groups;
+        //public IEnumerable<int> GetBrickIndices(Group group)
+        //{
+        //    for (int i = 0; i < save.bricks.Count; i++)
+        //    {
+        //        BrickInstance brick = save.bricks[i];
+        //        brick.GetTransformedBounds();
+        //    }
+        //}
         public static SaveGrouping CreateFromSave(SaveData save)
         {
             SaveGrouping group = CreateInstance<SaveGrouping>();

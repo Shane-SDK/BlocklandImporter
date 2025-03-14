@@ -34,6 +34,12 @@ namespace Blockland
             studs.y *= plateStudRatio;
             return studs;
         }
+        public static Vector3 UnityToStuds(Vector3 unity)
+        {
+            unity.y /= plateStudRatio;
+            unity /= settings.studToUnityScaleFactor;
+            return unity;
+        }
         public static Direction GetOppositeDirection(Direction dir)
         {
             if (dir == Direction.Left) return Direction.Right;

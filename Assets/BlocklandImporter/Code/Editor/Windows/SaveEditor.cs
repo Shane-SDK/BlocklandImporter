@@ -13,7 +13,7 @@ namespace Blockland.Editor.Windows
         {
             this.group = group;
 
-            GameObject go = MeshBuilder.CreateGameObject(group.save, true, false, true);
+            GameObject go = MeshBuilder.CreateGameObject(group.save, true, false, false);
             EditorSceneManager.MoveGameObjectToScene(go, this.scene);
         }
         protected override bool OnOpenStage()

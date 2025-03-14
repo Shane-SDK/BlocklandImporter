@@ -47,11 +47,12 @@ namespace Blockland
             {
                 for (int i = 0; i < group.volumes.Count; i++)
                 {
+                    // selection bounds are in stud space, transform to World/Unity
                     VolumeSelection selection = group.volumes[i];
 
                     handle.handleColor = Color.red;
-                    handle.size = selection.bounds.size;
-                    handle.center = selection.bounds.center;
+                    handle.size = Blockland.StudsToUnity(selection.bounds.size);
+                    handle.center = Blockland.StudsToUnity(selection.bounds.center);
 
                     EditorGUI.BeginChangeCheck();
                     handle.DrawHandle();
@@ -61,25 +62,40 @@ namespace Blockland
                     {
                         Undo.RecordObject(saveGroup, "Change Bounds");
                         // user changed the bounds
-                        selection.bounds.center = handle.center;
-                        selection.bounds.size = handle.size;
+                        selection.bounds.center = Blockland.UnityToStuds(handle.center);
+                        selection.bounds.size = Blockland.UnityToStuds(handle.size);
 
                         group.volumes[i] = selection;
                         EditorUtility.SetDirty(this);
                     }
 
-                    Vector3 center = selection.bounds.center;
-                    Vector3 scale = selection.bounds.size;
+                    Vector3 center = Blockland.StudsToUnity(selection.bounds.center);
+                    Vector3 scale = Blockland.StudsToUnity(selection.bounds.size);
                     Undo.RecordObject(saveGroup, "Change Transform");
                     Handles.TransformHandle(ref center, Quaternion.identity, ref scale);
-                    selection.bounds.center = center;
-                    selection.bounds.size = scale;
+                    selection.bounds.center = Blockland.UnityToStuds(center);
+                    selection.bounds.size = Blockland.UnityToStuds(scale);
 
                     group.volumes[i] = selection;
                 }
             }
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        public static Bounds TransformUnityToStuds(Bounds worldBounds)
+        {
+            Vector3 center = Blockland.UnityToStuds(worldBounds.center);
+            Vector3 size = Blockland.UnityToStuds(worldBounds.size);
+
+            return new Bounds(center, size);
+        }
+        public static Bounds TransformStudsToUnity(Bounds studBounds)
+        {
+            Vector3 center = Blockland.StudsToUnity(studBounds.center);
+            Vector3 size = Blockland.StudsToUnity(studBounds.size);
+
+            return new Bounds(center, size);
         }
     }
 }
